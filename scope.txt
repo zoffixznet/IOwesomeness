@@ -1,0 +1,13 @@
+src/core/io_operators.pm
+OK; src/core/IO.pm
+src/core/IO/ArgFiles.pm
+src/core/IO/Handle.pm
+src/core/IO/Notification.pm
+src/core/IO/Path.pm
+src/core/IO/Pipe.pm
+src/core/IO/Special.pm
+src/core/IO/Spec.pm
+src/core/IO/Spec/Cygwin.pm
+src/core/IO/Spec/QNX.pm
+src/core/IO/Spec/Unix.pm
+src/core/IO/Spec/Win32.pm
