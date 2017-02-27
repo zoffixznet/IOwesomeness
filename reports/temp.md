@@ -1,50 +1,3 @@
-# Perl 6 IO TPF Grant: Monthly Report (February, 2017)
-
-This document is the February, 2017 progress report for [TPF Standardization,
-Test Coverage, and Documentation of Perl 6 I/O Routines
-grant](http://news.perlfoundation.org/2017/01/grant-proposal-standardization.html)
-
-## Timing
-
-I'm currently running slightly behind the schedule outlined in the grant. I expect to complete the Action Plan and have it ratified by other core members by March 18th, which is the date of the 2017.03 compiler release. Then, I'll implement all of the Action Plan (and complete the grant) by the 2017.04 compiler release on April 15th. This is also the release the next Rakudo Star distribution will be based on, and so the regular end users will receive better IO there and then.
-
-Some members of the Core Team voiced concerns over implementing any changes that can break users' code, even if the changes do not break 6.c-errata specification
-tests. Once the full set of changes is known, they will be reviewed on a
-case-by-case basis, and some of them may be implemented under 6.d.PREVIEW
-pragma, to be included in 6.d language version, leaving 6.c language versions
-untouched. Note that changes that are decided to be 6.d material may delay
-the completion of this grant due to not fully-fleshed out infrastructure for
-supporting multiple language versions. The April 15th deadline stated above
-applies only to changes to 6.c language and new deadline will be ascertained
-for completion of the 6.d changes.
-
-## User Communications
-
-I wrote and disseminated advanced notice of the changes to be made due to this grant, to prepare the users to expect some code to break (some routines were found to be documented, despite being absent entirely from the [Specification](https://github.com/perl6/roast/tree/6.c-errata) and not officially part of the language).
-
-The notice can be seen at: [http://rakudo.org/2017/02/26/advance-notice-of-significant-changes/
-    ](http://rakudo.org/2017/02/26/advance-notice-of-significant-changes/)
-
-It is possible the Core Team will decide to defer all breaking changes to
-6.d language version, to be currently implemented under `v6.d.PREVIEW` pragma.
-
-## Bonus Deliverable
-
-The bonus deliverable—The Map of Perl 6 Routines—is now usable. The code is available in [perl6/routine-map](https://github.com/perl6/routine-map) repository, and the rendered version is available on [map.perl6.party](https://map.perl6.party). Its current state is sufficient
-to serve the intended purpose for this grant, but I'll certainly add improvements to it sometime in the future, such as linking to docs, linking to routines' source code, having an IRC bot looking stuff up in it, etc.
-
-It'll also be fairy easy to use the Map to detect undocumented routines or ones that are documented under the incorrect type.
-
-## Identified Issues/Deficiencies with IO Routines
-
-These points, issues, and ideas were identified this month and will be included for consideration in the Action Plan.
-
-- Calling practically any method on a closed IO::Handle results in an LTA (Less Than Awesome)
-    error message that reads `<something> requires an object with REPR MVMOSHandle` where `<something>` is
-    sometimes the name of the method called by the user and others is some internal method
-    invoked indirectly. We need better errors for closed file handles; and not something that would require a
-    `is-fh-closed()` type of conditional called in all the methods, which would be a hefty
-    performance hit.
 - Several routines have been identified which in other languages return useful information:
     number of bytes actually written or current file position, whereas in Perl 6 they just
     return a Bool (`.print`, `.say`, `.write`) or a Mu type object (`.seek`). Inconsistently,
@@ -56,9 +9,6 @@ These points, issues, and ideas were identified this month and will be included 
     unique in using this calling convention. I will seek to standardize this routine to take
     mutually-exclusive named arguments instead, preferably with much shorter names, but those
     are yet to be bikeshed.
-- `IO.umask` routine simply shells out to `umask`. This fails terribly on OSes that don't have
-    that command, especially since the code still tries to decode the received input as
-    an octal string, even after the failure. Needs improvement.
 - `link`'s implementation and documentation confuses what a "target" is. Luckily (or sadly?)
     there are exactly zero tests for this routine in the Perl 6 Specification, so we can
     change it to match the behaviour of `ln` Linux command and the `foo $existing-thing, $new-thing`
