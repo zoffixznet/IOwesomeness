@@ -11,6 +11,23 @@ a GitHub Issue where the topic can be discussed.**
 
 ---------------
 
+## Terms and Conventions
+
+- `routines` — means both subroutines and methods (as both are `Routine` types)
+- `IO::Handle.seek` / `.seek` — all method names are referenced with a `.`
+before their name, which is optionally preceded by the type.
+- `&seek` — all subroutine names are referenced with a `&` before their name.
+
+---------------
+
+## Removals
+
+- `&homedir` ­/ `&tempdir` — these routines save typing half a single line of code and are rarely needed. The user will set `$*TMPDIR` / `$*HOMEDIR` variables
+directly.
+
+
+---------------
+
 ## Changes with Backwards-Compatible Support
 
 ### `IO::Handle.seek` seek reference [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/1)
@@ -30,7 +47,8 @@ work in 6.c language and will be removed in 6.d.
 **Affected routines**
 - `IO::Path.chdir` / `&chdir`
 - `&indir`
-- `&homedir` (currently proposed for removal)
+- `&homedir` *(proposed for removal)*
+- `&tmpdir` *(proposed for removal)*
 **Current behaviour**:
 `IO::Path.chdir`,
 
