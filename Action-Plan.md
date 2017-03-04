@@ -23,8 +23,7 @@ before their name, which is optionally preceded by the type.
 ## Removals
 
 - `&homedir` ­/ `&tempdir` — these routines save typing half a single line of code and are rarely needed. The user will set `$*TMPDIR` / `$*HOMEDIR` variables
-directly.
-
+directly, using `my ...` to localize the effects.
 
 ---------------
 
@@ -82,6 +81,20 @@ to throw/fail with an error. This will give the same behaviour as adding
 performance impact (it was ~5% when such check was added to `.lines`
 terator)
 
+---------------
+
+## Additions
+
+- `IO::Path.extension` — it's not uncommon to see users asking on IRC how to
+obtain or modify an extension of a path. Depending on what is needed, the answer
+is usually a gnarly-looking `.subst` or `.split`+`.join` invocation. It is
+proposed we add `.extension` method to address those needs in a cleaner manner.
+
+#### Usage
+
+```perl6
+    multi method extension (IO::Path:D, :$depth = 1..*
+```
 
 ---------------
 
