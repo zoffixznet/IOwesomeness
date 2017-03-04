@@ -29,6 +29,10 @@ directly, using `my ...` to localize the effects.
 
 ## Changes with Backwards-Compatible Support
 
+The changes proposed in this section allow for retention of old behaviour.
+It is proposed the use of those features is made to issue a deprecation warning
+(in 6.c language) and to be entirely removed in 6.d language.
+
 ### `IO::Handle.seek` seek reference [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/1)
 
 **Current behaviour**:
@@ -38,8 +42,8 @@ somewhat long to type: `SeekFromBeginning`, `SeekFromCurrent`, `SeekFromEnd`.
 
 **Proposed change**:
 - Use mutually exclusive named arguments instead: `:from-start`,
-`:from-current`, and `:from-end`. The old enums will be kept and will still
-work in 6.c language and will be removed in 6.d.
+`:from-current`, and `:from-end`. The old enums will be kept in 6.c language and
+will be removed in 6.d.
 
 ### `:$test` parameter on multiple routines
 
@@ -48,8 +52,37 @@ work in 6.c language and will be removed in 6.d.
 - `&indir`
 - `&homedir` *(proposed for removal)*
 - `&tmpdir` *(proposed for removal)*
+
 **Current behaviour**:
-`IO::Path.chdir`,
+
+The affected routines take `:$test` parameter as a string (or
+`Positional` that's later stringified) of tests to perform on a directory.
+It's difficult to remember the correct order and currently it's very easy
+to give an argument that will incorrectly report the directory as failing the
+test: `chdir "/tmp/", :test<r w>` succeeds, while `:test<rw>` or `:test<w r`>
+fail.
+
+It is proposed the `:$test` parameter to be replaced with 4 boolean named
+parameters `:$r, :$w, :$x, :$d`, with `:$d` (is it directory) test to be
+enabled by default. Usage then becomes:
+
+```perl6
+# BEFORE:
+indir :test<r w x>, '/tmp/foo', { dir.say } # Good
+indir :test<w r x>, '/tmp/foo', { dir.say } # Bad. Wrong order
+
+# AFTER:
+indir :r:w:x, '/tmp/foo', { dir.say } # Good
+indir :w:r:x, '/tmp/foo', { dir.say } # Still good
+indir :x:r:w, '/tmp/foo', { dir.say } # Still good
+```
+
+Note that as part of this change, it is proposed all of the aforementioned
+*Affected Routines* default to only using the `:d` test. Doing so will also
+resolve [RT#130460](https://rt.perl.org/Ticket/Display.html?id=130460).
+
+To preserve backwards compatibility, the `:$test` parameter will remain for
+6.c language and will be removed in 6.d language.
 
 ---------------
 
@@ -81,21 +114,72 @@ to throw/fail with an error. This will give the same behaviour as adding
 performance impact (it was ~5% when such check was added to `.lines`
 terator)
 
----------------
+### `IO::Path.extension`
 
-## Additions
-
-- `IO::Path.extension` — it's not uncommon to see users asking on IRC how to
+It's not uncommon to see users asking on IRC how to
 obtain or modify an extension of a path. Depending on what is needed, the answer
-is usually a gnarly-looking `.subst` or `.split`+`.join` invocation. It is
-proposed we add `.extension` method to address those needs in a cleaner manner.
+is usually a gnarly-looking `.subst` or `.split`+`.join` invocation. In
+addition, often the desired extension for files like `foo.tar.gz` would be
+`tar.gz`, yet the current `.extension` does not offer a means to obtain it.
 
-#### Usage
+The following changes are proposed:
 
-```perl6
-    multi method extension (IO::Path:D, :$depth = 1..*
-```
+- Add `:$parts = 1` named parameter that specifies how many parts (that is,
+    `.whatever` segments, counting from end) to consider as the extension.
+    That is `'foo.tar.gz'.IO.extension` returns `'gz'`,
+    `'foo.tar.gz'.IO.extension: :2parts` returns `'tar.gz'`, and
+    `'foo.tar.gz'.IO.extension: :3parts` returns `''` (signaling there is no
+        extension on the file).
+
+    In the future we can extend this to take a `Range` or `Junction` of values,
+    but for now, just a single `UInt` should be sufficient. The default value
+    of `1` preserves the current behaviour of the routine. Value of `0` always
+    makes routine return an empty string.
+- Add a candidate that accepts a positional `$replacement` argument. This
+    candidate will return a new `IO::Path` object, with the extension
+    changed to the the `$replacement`. The user can set the `:parts` argument
+    to `0` if they want to *append* an extra extension. The operation is
+    equivalent to:
+
+    ```perl6
+        my $new-ext = 'txt';
+        say (.substr(0, .chars - .extension.chars) ~ $new-ext).IO
+            with 'foo.tar.gz'.IO
+        # OUTPUT: «"foo.tar.txt".IO␤»
+    ```
+
+    Note: since `.extension` returns the extension without the leading dot,
+    the replacement string does not have it either. However, since the users
+    may be inclined to include it, we should probably warn if it is included.
 
 ---------------
+
+----------------
 
 ## Bug Fixes
+
+Along with implementation of API changes in this proposal, an attempt to
+resolve the following tickets will be made under the [IO grant](http://news.perlfoundation.org/2017/01/grant-proposal-standardization.html).
+
+#### RT Tickets
+
+- [RT#128047: Rakudo may crash if you use get() when -n is used (perl6 -ne 'say get' <<< 'hello')](https://rt.perl.org/Ticket/Display.html?id=128047)
+- [RT#125757: shell().exitcode is always 0 when :out is used](https://rt.perl.org/Ticket/Display.html?id=125757)
+- [RT#128214: Decide if `.resolve` should work like POSIX `realname`](https://rt.perl.org/Ticket/Display.html?id=128214)
+- [RT#130715: IO::Handle::close shouldn't decide what's a failure](https://rt.perl.org/Ticket/Display.html?id=130715)
+- [RT#127407: (1) add method IO::Path.stemname; (2) expand method IO::Path.parts](https://rt.perl.org/Ticket/Display.html?id=127407)
+- [RT#127682: (OSX) writing more than 8192 bytes to IO::Handle causes it to hang forever](https://rt.perl.org/Ticket/Display.html?id=127682)
+- [RT#130900: nul in pathname](https://rt.perl.org/Ticket/Display.html?id=130900)
+- [RT#125463: $non-existent-file.IO.unlink returns True](https://rt.perl.org/Ticket/Display.html?id=125463)
+- [RT#129845: `.dir` returns corrupted `IO::Path`s under concurrent load](https://rt.perl.org/Ticket/Display.html?id=129845)
+- [RT#128062: (MoarVM) chdir does not respect group reading privilege](https://rt.perl.org/Ticket/Display.html?id=128062)
+- [RT#130781: Using both :out and :err in run() reports the wrong exit code](https://rt.perl.org/Ticket/Display.html?id=130781)
+- [RT#127566: run hangs on slurp-rest with :out and :err if command runs background process](https://rt.perl.org/Ticket/Display.html?id=127566)
+- [RT#130898: IO::Spec confused by diacritics](https://rt.perl.org/Ticket/Display.html?id=130898)
+- [RT#127772: mkdir($file) succeeds if $file exists and is a regular file](https://rt.perl.org/Ticket/Display.html?id=127772)
+- [RT#123838: IO::Handle::tell return 0, no matter what](https://rt.perl.org/Ticket/Display.html?id=123838)
+
+#### GitHub Issues
+
+- [roast/Add tests to make sure that file names roundtrip correctly when they should](https://github.com/perl6/roast/issues/221)
+- [doc/IO::Handle "replace" deprecated method ins with kv](https://github.com/perl6/doc/issues/401)
