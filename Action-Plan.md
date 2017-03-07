@@ -19,12 +19,14 @@ before their name, which is optionally preceded by the type.
 - `&seek` — all subroutine names are referenced with a `&` before their name.
 
 ---------------
+---------------
 
 ## Removals
 
 - `&homedir` ­/ `&tempdir` — these routines save typing half a single line of code and are rarely needed. The user will set `$*TMPDIR` / `$*HOMEDIR` variables
 directly, using `my ...` to localize the effects.
 
+---------------
 ---------------
 
 ## Changes with Backwards-Compatible Support
@@ -45,15 +47,17 @@ somewhat long to type: `SeekFromBeginning`, `SeekFromCurrent`, `SeekFromEnd`.
 `:from-current`, and `:from-end`. The old enums will be kept in 6.c language and
 will be removed in 6.d.
 
+---------------
+
 ### `:$test` parameter on multiple routines
 
-**Affected routines**
+**Affected routines:**
 - `IO::Path.chdir` / `&chdir`
 - `&indir`
 - `&homedir` *(proposed for removal)*
 - `&tmpdir` *(proposed for removal)*
 
-**Current behaviour**:
+**Current behaviour:**
 
 The affected routines take `:$test` parameter as a string (or
 `Positional` that's later stringified) of tests to perform on a directory.
@@ -61,6 +65,8 @@ It's difficult to remember the correct order and currently it's very easy
 to give an argument that will incorrectly report the directory as failing the
 test: `chdir "/tmp/", :test<r w>` succeeds, while `:test<rw>` or `:test<w r`>
 fail.
+
+**Proposed behaviour:**
 
 It is proposed the `:$test` parameter to be replaced with 4 boolean named
 parameters `:$r, :$w, :$x, :$d`, with `:$d` (is it directory) test to be
@@ -86,28 +92,52 @@ To preserve backwards compatibility, the `:$test` parameter will remain for
 
 ---------------
 
+## Make all routines that return paths return an `IO::Path` instead of `Str`
+
+**Affected routines:**
+- `IO::Path.absolute`
+
+**Current behaviour:**
+The routine returns a `Str`
+
+**Proposed behaviour:**
+Return an `IO::Path` instead. Currently some IO routines return an `IO::Path`
+and some `Str`. Lack of consistency makes it tricky to remember which returns
+which, and also lead to superstitious `.IO` methods tacked on.
+
+It is proposed all routines that return "a path" return an `IO::Path` object
+instead of `Str`. Since `IO::Path` is `Cool`, it will still stringify and
+maintain the old `Str` behaviour. The only backwards-compatibility issue this
+change would present is in explicit type check (e.g.
+`my Str $x = ".".IO.absolute` would now throw). If this is unacceptable or
+if there are 6.c tests preventing this change, then it is to be implemented
+under 6.d.PREVIEW pragma.
+
+---------------
+---------------
+
 ## Non-Conflicting Improvements
 
 ### `IO.umask`
 
-**Current behaviour**:
+**Current Behaviour:**
 - shell out to `umask` and parse output as octal string. On OSes without
 `umask` this produces output that `umask` isn't a recognized command and then
 returns a `Failure` with `X::Str::Numeric` exception.
 
-**Proposed change**:
+**Proposed Change:**
 - Use proper detection for whether running `umask` succeeded and returning
 an appropriate Failure in cases where it doesn't. Only then attempt to
 decode the output.
 
 ### `IO::Handle`'s Closed status
 
-**Current behaviour**:
+**Current Behaviour:**
 - When a IO::Handle is closed, its $!PIO atribute is set to nqp::null. This
 causes calls to many methods on a closed file handle to return LTA error,
 such as `foo requires an object with REPR MVMOSHandle`.
 
-**Proposed change**:
+**Proposed Change:**
 - On handle close, mixin a role that overrides all the relevant methods
 to throw/fail with an error. This will give the same behaviour as adding
 `if nqp::isnull($!PIO) { ... throw ... }` to all the methods, without a
@@ -151,6 +181,29 @@ The following changes are proposed:
     Note: since `.extension` returns the extension without the leading dot,
     the replacement string does not have it either. However, since the users
     may be inclined to include it, we should probably warn if it is included.
+
+### `IO::Path` routines that involve a stat call
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX TODO
+
+**Routine List:**
+
+`.d`, `.f`, `.l`, `.r`, `.s`, `.w`, `.x`, `.z`, `.rw`, `.rwx`, `.modified`, `.accessed`, `.changed`, `.mode`
+
+**Current Behaviour:**
+Each test goes out to VM to perform several `stat` calls (other than `.e` that
+performs just one). For example, a single `.rwx` call performs 4 `stat` calls.
+Based on IRC conversation, `stat` call is expensive and caching its results
+can be beneficial.
+
+**Proposed Change:**
+Make `np::stat` accept `nqp::const::STAT_ALL`
+
+See also: https://irclog.perlgeek.de/perl6-dev/2017-03-06#i_14213924
+and https://irclog.perlgeek.de/perl6-dev/2017-03-06#i_14213978
+
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ---------------
 
