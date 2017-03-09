@@ -7,5 +7,6 @@ Should be very desirable.
 
 --- Fix all the broken .split, .words, etc routines. They take only SOME of the args and there's no guarantee the handle would get closed either.
 
+--- Ensure all routines fail with `X::IO::*` exceptions, not AdHocs
 
-perl6.vip
+
