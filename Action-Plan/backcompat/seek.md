@@ -2,7 +2,7 @@
 
 - [✔️] docs
 - [✔️] master roast
-- [x] 6.c-errata roast
+- [✘] 6.c-errata roast
 
 **Current behaviour**:
 - The seek reference is taken as an enum which is globally available and is

@@ -1,5 +1,3 @@
-----------------
-
 ## Bug Fixes
 
 Along with implementation of API changes in this proposal, an attempt to

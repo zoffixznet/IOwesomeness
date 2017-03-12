@@ -24,10 +24,10 @@ Some sections are marked as, e.g.:
 
 - [✔️] docs
 - [✔️] master roast
-- [x] 6.c-errata roast
+- [✘] 6.c-errata roast
 
 This indicates whether the proposed change affects something that is (`[✔️]`) or
-isn't (`[x]`) documented on [docs.perl6.org](https://docs.perl6.org),
+isn't (`[✘]`) documented on [docs.perl6.org](https://docs.perl6.org),
 tested in [master branch of roast](https://github.com/perl6/roast), or tested in
 [6.c-errata branch of roast](https://github.com/perl6/roast/tree/6.c-errata).
-Just `[x] roast` means both `master` and `6.c-errata` branches.
+Just `[✘] roast` means both `master` and `6.c-errata` branches.

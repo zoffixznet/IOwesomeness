@@ -1,8 +1,8 @@
 ### `&tmpdir`
 
-- [x] docs
-- [x] roast
-- [x] routine is broken and never worked since Christmas
+- [✘] docs
+- [✘] roast
+- [✘] routine is broken and never worked since Christmas
 
 Saves typing half a single line of code and is rarely needed.
 The user will set `$*TMPDIR` variable directly, using `my ...` to
