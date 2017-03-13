@@ -25,3 +25,8 @@ resolve the following tickets will be made under the [IO grant](http://news.perl
 
 - [roast/Add tests to make sure that file names roundtrip correctly when they should](https://github.com/perl6/roast/issues/221)
 - [doc/IO::Handle "replace" deprecated method ins with kv](https://github.com/perl6/doc/issues/401)
+
+
+#### Other Issues
+
+- `IO::Path.resolve` is not portable and produces wrong results on Windows.

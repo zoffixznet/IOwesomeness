@@ -15,28 +15,28 @@ src/core/IO/Spec/QNX.pm
 src/core/IO/Spec/Unix.pm
 src/core/IO/Spec/Win32.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/io_operators.pm:$?LINE $2 $3");#g' src/core/io_operators.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/io_operators.pm:$. $2 $3");#g' src/core/io_operators.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO.pm:$?LINE $2 $3");#g' src/core/IO.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO.pm:$. $2 $3");#g' src/core/IO.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/ArgFiles.pm:$?LINE $2 $3");#g' src/core/IO/ArgFiles.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/ArgFiles.pm:$. $2 $3");#g' src/core/IO/ArgFiles.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Handle.pm:$?LINE $2 $3");#g' src/core/IO/Handle.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Handle.pm:$. $2 $3");#g' src/core/IO/Handle.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Notification.pm:$?LINE $2 $3");#g' src/core/IO/Notification.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Notification.pm:$. $2 $3");#g' src/core/IO/Notification.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Path.pm:$?LINE $2 $3");#g' src/core/IO/Path.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Path.pm:$. $2 $3");#g' src/core/IO/Path.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Pipe.pm:$?LINE $2 $3");#g' src/core/IO/Pipe.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Pipe.pm:$. $2 $3");#g' src/core/IO/Pipe.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Special.pm:$?LINE $2 $3");#g' src/core/IO/Special.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Special.pm:$. $2 $3");#g' src/core/IO/Special.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec.pm:$?LINE $2 $3");#g' src/core/IO/Spec.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec.pm:$. $2 $3");#g' src/core/IO/Spec.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec/Cygwin.pm:$?LINE $2 $3");#g' src/core/IO/Spec/Cygwin.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec/Cygwin.pm:$. $2 $3");#g' src/core/IO/Spec/Cygwin.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec/QNX.pm:$?LINE $2 $3");#g' src/core/IO/Spec/QNX.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec/QNX.pm:$. $2 $3");#g' src/core/IO/Spec/QNX.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec/Unix.pm:$?LINE $2 $3");#g' src/core/IO/Spec/Unix.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec/Unix.pm:$. $2 $3");#g' src/core/IO/Spec/Unix.pm
 
-perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec/Win32.pm:$?LINE $2 $3");#g' src/core/IO/Spec/Win32.pm
+perl -pi -e 'next if /\bproto\b/; s#(\s*(?:multi\s+)?(method|submethod|sub)\s*([^\s({]+)[^{]+\{)#$1 %*ENV<FOO> && nqp::say("src/core/IO/Spec/Win32.pm:$. $2 $3");#g' src/core/IO/Spec/Win32.pm
