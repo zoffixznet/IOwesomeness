@@ -2,9 +2,10 @@
 
 **Affected routines:**
 - `IO::Path.absolute`
+- `IO::Path.relative`
 
 **Current behaviour:**
-The routine returns a `Str`
+The routines return a `Str`
 
 **Proposed behaviour:**
 Return an `IO::Path` instead. Currently some IO routines return an `IO::Path`

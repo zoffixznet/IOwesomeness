@@ -17,3 +17,9 @@ Can we keep it as IO::Path always instead?
 --- .Str of an IO path does not consider its `$*CWD`, so
 `my $p = "bar".IO; chdir ".."; $p.slurp.say` still works, but
 `my $p = "bar".IO; chdir ".."; $p.Str.IO.slurp.say` doesn't.
+
+
+
+--- ugexe 	my reasoning was .abspath already returns the absolute as a Str, but
+.abspath isnt supposed to be exposed (i think?) and there is no .relative
+alternative
