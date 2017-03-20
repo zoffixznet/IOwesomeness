@@ -19,12 +19,5 @@ Can we keep it as IO::Path always instead?
 `my $p = "bar".IO; chdir ".."; $p.Str.IO.slurp.say` doesn't.
 
 
---- ugexe 	my reasoning was .abspath already returns the absolute as a Str, but
-.abspath isnt supposed to be exposed (i think?) and there is no .relative
-alternative
-
 --- Some sort of a bug when trying to read a sparsefile in bin mode:
 `dd of=file bs=1 seek=100000000 count=0; perl6 -e '"file".IO.slurp(:bin)`
-
---- `open :rx/:x/:exclusive` don't seem to be working (or I don't get what it
-does)
