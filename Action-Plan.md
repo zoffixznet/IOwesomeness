@@ -333,8 +333,8 @@ the `command $existing-thing, $thing-we're-creating` format with respect to
 their argument.
 
 The `&link` and `&symlink` routines are an exception to this rule. And while
-`&symlink` is documented and tested, both the docs and the tests use term
-`"target"` to refer to the name of the link, rather to the actual target it
+`&symlink` is documented and tested, both the docs and the tests incorrectly
+use the term `"target"` to refer to the link, rather to the actual target it
 points to.
 
 **Proposed behaviour:**
