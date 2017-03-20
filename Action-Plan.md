@@ -241,7 +241,7 @@ Thus, combined with critique of **`(a)`**, the recommended way to get the first
 5 lines from a file becomes rather involved:
 
 ```perl6
-    my @stuff = with "foo".IO.open {
+    my @stuff = with open "foo" {
         LEAVE .close;
         .lines[^5];
     }
@@ -285,6 +285,13 @@ counterparts.
 - Clearly document the filehandle leak issue along with plentiful examples
 of using `$limit` instead of `[^whatever]` on the returned `Seq`, or to
 exhaust the partially-consumed Seq by sinking it, when you're done with it.
+
+With these proposals, the example mentioned earlier remains simple, and
+does not have the filehandle leak issue:
+
+```perl6
+    my @stuff = "foo".IO.lines: 5;
+```
 
 
 ------------------------------
