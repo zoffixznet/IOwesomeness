@@ -17,6 +17,9 @@ a GitHub Issue where the topic can be discussed.**
 - `IO::Handle.seek` / `.seek` — all method names are referenced with a `.`
 before their name, which is optionally preceded by the type.
 - `&seek` — all subroutine names are referenced with a `&` before their name.
+- `$*SPEC` — functionality common to `IO::Spec::*` types, is referred to using
+`$*SPEC` variable and means all `IO::Spec::*` types that implement a method or
+feature are proposed for change.
 
 ## Legend
 
