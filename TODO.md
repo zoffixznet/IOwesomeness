@@ -26,7 +26,4 @@ Can we keep it as IO::Path always instead?
 -- Document that .lines, .words, etc. on an `IO::Handle` move the current
 position in the file and using more than one at the same time will end in tears.
 
-
-cpan@perlbuild2~/CPANPRC/rakudo (nom)$ ./perl6 -e '$ = shell(:out, "yes 2>/dev/null | head -n 100000").out.lines; say now - INIT now'
-0.0066377
-head: error writing ‘standard output’: Connection reset by peer
+--- Document `.Supply`'s read mode stays the same even if `.encoding` changes.

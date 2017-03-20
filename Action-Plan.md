@@ -530,6 +530,35 @@ Add `Bool :$completely` parameter that, when specified as `True`, will cause
 
 
 ------------------------------
+
+### Remove `:bin` parameter on `&spurt` / `IO::Path.spurt`
+
+- [✔️] docs
+- [✘] roast
+
+**Current Behaviour:**
+The argument is ignored. The binary mode is enabled based on whether or not
+the spurted `$content` is a `Blob`.
+
+**Proposed Change:**
+Remove and un-document the argument.
+
+
+------------------------------
+
+## Make `&words` default to `$*ARGFILES`
+
+**Current behaviour:**
+`&lines`, `&get`, and `&getc` (or "all lines", "one line", and "one char")
+default to using `$*ARGFILES`. `&words` (or "all words") exceptionally doesn't
+and throws instead.
+
+**Proposed behaviour:**
+Make `&words` default to `$*ARGFILES`, just like the rest of the routines
+in this family.
+
+
+------------------------------
 ------------------------------
 
 ## Changes Needing Attention
