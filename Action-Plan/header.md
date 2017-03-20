@@ -29,8 +29,11 @@ Some sections are marked as, e.g.:
 - [✔️] master roast
 - [✘] 6.c-errata roast
 
-This indicates whether the proposed change affects something that is (`[✔️]`) or
-isn't (`[✘]`) documented on [docs.perl6.org](https://docs.perl6.org),
+This indicates whether the **proposed change** affects something that
+is (`[✔️]`) or isn't (`[✘]`) documented on [docs.perl6.org](https://docs.perl6.org),
 tested in [master branch of roast](https://github.com/perl6/roast), or tested in
 [6.c-errata branch of roast](https://github.com/perl6/roast/tree/6.c-errata).
 Just `[✘] roast` means both `master` and `6.c-errata` branches.
+
+To re-iterate: the indicators are only for the proposed changes (e.g. removed
+argument); not entire routines.
