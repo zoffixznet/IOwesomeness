@@ -27,3 +27,8 @@ Can we keep it as IO::Path always instead?
 position in the file and using more than one at the same time will end in tears.
 
 --- Document `.Supply`'s read mode stays the same even if `.encoding` changes.
+
+
+--- ugexe │ i think IO::Huh was meant to allow something like IO::File.new(uri => ...) to work, which intended to let you supply your own reader/writer
+
+--- ugexe │ the other IO thing i'd really like to see is IO::Socket to be IO::Handle or at least an IO interface for dealing with a a file handle *or* socket data
