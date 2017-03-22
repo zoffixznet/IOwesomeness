@@ -17,6 +17,8 @@ a GitHub Issue where the topic can be discussed.**
 - `IO::Handle.seek` / `.seek` — all method names are referenced with a `.`
 before their name, which is optionally preceded by the type.
 - `&seek` — all subroutine names are referenced with a `&` before their name.
+- `seek` — if neither a dot, nor `&` preceeds the name, the reference is to
+    both subroutines and methods with that name
 - `$*SPEC` — functionality common to `IO::Spec::*` types, is referred to using
 `$*SPEC` variable and means all `IO::Spec::*` types that implement a method or
 feature are proposed for change.
@@ -185,6 +187,52 @@ under the name `.child`:
             die "Cannot use $file as a valid file to read/write from";
         }
     ```
+
+
+------------------------------
+
+## Make `:close` behaviour the default in `IO::Handle` and Its Subclasses
+
+- [✘] docs (`:close` is mentioned only for `.comb` and only in signature and a example's comment, not prose)
+- [✘] roast (`:close` is *used* in tests for `.words` and `.comb` but its functionality is not tested)
+
+**Current behaviour:**
+The routines `&slurp`, `IO::Path.slurp`, `&lines`, `IO::Path.lines`, `&comb`,
+`IO::Path.comb`, `IO::Path.words`, `IO::Path.split`, and the
+corresponding `IO::ArgFiles` routines **close the filehandle at the end**
+
+Contrary to that pattern, `IO::Handle` and `IO::Pipe` routines `.slurp-rest`,
+`.lines`, `.words`, `.comb`, and `.split` do *NOT* close the handle by default
+(I would assume some sort of closage is done for pipes, but preliminary tests
+showed omitting `:close` on `IO::Pipe.slurp-rest` in a 3000-iteration loop
+causes a coredump on circa 2017.02 Rakudo)
+
+**Proposed behaviour:**
+- Remove `:close` parameter
+- Add `:keep-open` `Bool` parameter that defaults to `False`. Close the
+handle when the iterator is exhausted, unless `:keep-open` parameter is set
+to `True`
+
+First, no one seems to be using the `:close` parameter anyway. My guess would
+be this is due to ignorance and these programs are leaking filehandles, rather
+than the users explicitly closing the filehandle elsewhere in the program.
+A March 22, 2017 ecosystem grep showed 1125 potential calls to the methods, yet
+only one match came up for the `close` parameter on the same line: the
+`perl6/doc` repository.
+
+```bash
+    $ grep -FR -e '.comb' -e '.lines' -e '.words' -e '.slurp-rest' | wc -l
+    1125
+    $ grep -FR -e '.comb' -e '.lines' -e '.words' -e '.slurp-rest' | grep close | wc -l
+    1
+```
+
+Second, it's likely much more common to wish to close the filehandle at the end
+in these methods than not to. The operations provide a the file as basically a
+stream of chunks: whole (`.slurp-rest`), line-sized (`.lines`), word-sized
+(`.words`), pattern- or character-sized (`.comb`), letting the user perform
+most possible operations without needing to `.seek` to another file position
+after exhausting the iterator (which would require the handle to be kept open).
 
 
 ------------------------------
@@ -393,8 +441,7 @@ affected.
 ## Changes with Backwards-Compatible Support
 
 The changes proposed in this section allow for retention of old behaviour.
-It is proposed the use of old behaviour is made to issue a deprecation warning
-(in 6.c language) and for it to be removed entirely in 6.d language.
+It is proposed the old behaviour to be removed entirely in 6.d language.
 
 Note: since our current infrastructure for 6.d language is **additive,** the
 behaviour proposed for removal in 6.d might not end up actually being removed
@@ -419,6 +466,37 @@ somewhat long to type: `SeekFromBeginning`, `SeekFromCurrent`, `SeekFromEnd`.
 - Use mutually exclusive named arguments instead: `:from-start`,
 `:from-current`, and `:from-end`. The old enums will be kept in 6.c language and
 will be removed in 6.d.
+
+
+------------------------------
+
+### Rename `IO::Handle.slurp-rest` to just `.slurp`
+
+- [✔️] docs
+- [✔️] roast
+
+**Current behaviour**:
+There are thematically related routines `comb` (all the characters),
+`words` (all the words), `lines` (all the lines), and `slurp` (all the stuff).
+All but the last are present as subroutines and as methods on `IO::Path`,
+`IO::ArgFiles`, `IO::Path`, and `IO::Pipe`.
+
+With respect to `&slurp`, there is sub `&slurp` and method `.slurp` on `IO::Path` and `IO::ArgFiles`. The `IO::Handle` and `IO::Pipe` name it
+`.slurp-rest` instead. Since `IO::ArgFiles is IO::Handle`, it also has a
+`.slurp-rest`, but it's broken and unusable.
+
+**Proposed change**:
+Rename `.slurp-rest` to just `.slurp` in 6.d language and make use of
+`.slurp-rest` issue a deprecation warning.
+
+I can surmise the name change in `IO::Handle` and its subclasses was meant to
+be indicative that `.slurp-rest` only slurps **from the current file position**.
+However, this caveat applies to every single read method in `IO::Handle`:
+`.slurp`, `.lines`, `.words`, `.comb`, `.get`, `.getc`, `.getchars`. Yet, all
+but `.slurp` do not have `-rest` in their name, as the behaviour is implied.
+
+The longer name is even more absurd in `IO::Pipe`, on which `.seek` cannot be
+used.
 
 
 ------------------------------
@@ -472,6 +550,19 @@ To preserve backwards compatibility, the `:$test` parameter will remain for
 
 The changes proposed in this section do not change current behaviour and merely
 enhance it or add new, non-conflicting features.
+
+
+------------------------------
+
+### `IO::CatPath` and `IO::CatHandle`
+
+**Current Behaviour:**
+- `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff
+
+**Proposed Change:**
+All of the changes are proposed for 6.d. We bring back the two classes as
+a generalized version of what `IO::ArgFiles` currently does. If the idea
+is approved, more detailed design plan will be drafted first.
 
 
 ------------------------------
@@ -617,7 +708,7 @@ in this family.
 ------------------------------
 ------------------------------
 
-## Undecided Changes
+## Controversial Changes
 
 I'm not 100% sure whether the changes in this section actually need to be made,
 as they appear to be deliberately introduced behaviours; I'm just unsure of
