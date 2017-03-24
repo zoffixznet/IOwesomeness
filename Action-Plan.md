@@ -5,11 +5,10 @@
 - [Non-Conflicting Improvements](Non-Conflicting-Improvements)
         - [`IO::CatPath` and `IO::CatHandle`](-IO--CatPath--and--IO--CatHandle-)
         - [`IO::Handle`'s Closed status](-IO--Handle--s-Closed-status)
+        - [Restructure `spurt`](Restructure--spurt-)
         - [`IO::Path` routines that involve a stat call](-IO--Path--routines-that-involve-a-stat-call)
         - [`IO::Path.extension`](-IO--Path-extension-)
-        - [`IO.umask`](-IO-umask-)
         - [Make `IO::Path.resolve` fail if it can't resolve path](Make--IO--Path-resolve--fail-if-it-can-t-resolve-path)
-        - [Remove `:bin` parameter on `&spurt` / `IO::Path.spurt`](Remove---bin--parameter-on---spurt-----IO--Path-spurt-)
         - [Make `&words` default to `$*ARGFILES`](Make---words--default-to----ARGFILES-)
 - [Changes with Backwards-Compatible Support](Changes-with-Backwards-Compatible-Support)
         - [`IO::Handle.seek` seek reference](-IO--Handle-seek--seek-reference)
@@ -28,6 +27,7 @@
 - [Controversial Changes](Controversial-Changes)
     - [Make `IO::Path.is-absolute` Give False for `/` path on Windows](Make--IO--Path-is-absolute--Give-False-for-----path-on-Windows)
 - [Removals](Removals)
+        - [Remove `role IO {}` Along With Its Only `IO.umask` Method](Remove--role-IO-----Along-With-Its-Only--IO-umask--Method)
     - [Remove `IO::Path` Methods from `IO::Handle`](Remove--IO--Path--Methods-from--IO--Handle-)
         - [`&homedir`](--homedir-)
         - [`&tmpdir`](--tmpdir-)
@@ -123,6 +123,31 @@ performance impact to open handles (it was ~5% when such check was added to
 
 ------------------------------
 
+### Restructure `spurt`
+
+- [✔️] docs (with several inaccuracies)
+- [✘] roast
+
+**Current Behaviour:**
+- `IO::Path` implements `.spurt` which is the only writing method that's
+present in `IO::Path` but is not present in `IO::Handle`
+- `:bin` parameter on `&spurt` / `IO::Path.spurt` is taken and documented, but
+is ignored. The binary mode is enabled based on whether or not the spurted
+`$content` is a `Blob`.
+- The docs lie about `&spurt` being able to take an `IO::Handle`
+
+**Proposed Change:**
+- Move `IO::Path.spurt` implementation to `IO::Handle`. Remove all of its
+parameters, except for a single positional `Cool:D` parameter.
+- Make `IO::Path.spurt` delegate to `IO::Handle`
+    - Remove `:bin` argument and ascertain the spurt mode based on the type
+        of the content to be spurted
+    - The rest of the arguments are to be used in the `IO::Handle.open` call,
+        with the `:createonly` argument being an alias for `:x` open mode.
+
+
+------------------------------
+
 ### `IO::Path` routines that involve a stat call
 
 **Routine List:**
@@ -187,21 +212,6 @@ The following changes are proposed:
 
 ------------------------------
 
-### `IO.umask`
-
-**Current Behaviour:**
-- shell out to `umask` and parse output as octal string. On OSes without
-`umask` this produces output that `umask` isn't a recognized command and then
-returns a `Failure` with `X::Str::Numeric` exception.
-
-**Proposed Change:**
-- Use proper detection for whether running `umask` succeeded and returning
-an appropriate Failure in cases where it doesn't. Only then attempt to
-decode the output.
-
-
-------------------------------
-
 ### Make `IO::Path.resolve` fail if it can't resolve path
 
 **Current behaviour:**
@@ -213,21 +223,6 @@ removed, but the `../` part will remain).
 **Proposed behaviour:**
 Add `Bool :$completely` parameter that, when specified as `True`, will cause
 `.resolve` to `fail` if cannot fully resolve the path.
-
-
-------------------------------
-
-### Remove `:bin` parameter on `&spurt` / `IO::Path.spurt`
-
-- [✔️] docs
-- [✘] roast
-
-**Current Behaviour:**
-The argument is ignored. The binary mode is enabled based on whether or not
-the spurted `$content` is a `Blob`.
-
-**Proposed Change:**
-Remove and un-document the argument.
 
 
 ------------------------------
@@ -750,6 +745,42 @@ by the `.is-absolute` method.
 
 The changes in this section propose the immediate removal of routines, with
 no deprecation period.
+
+
+------------------------------
+
+### Remove `role IO {}` Along With Its Only `IO.umask` Method
+
+- [✘] docs (partial and inaccurate)
+- [✘] roast ([1 indirect test](https://github.com/perl6/roast/blob/4dcbbb9097a728b7e46feb582acbaff19b81014d/S06-multi/type-based.t#L43) that tests multi-dispatch by dispatching `$*ERR`
+to `IO` type candidate)
+
+**Documentation:**
+While the documentation website mentions `role IO`, it's mainly to list
+the IO subroutines. The role itself is described as
+*"Input/output related object"*, which isn't entirely true, as `IO::Path` does
+not do `IO`, despite being related.
+
+The role is also described as providing no functionality, despite it currently
+containing the `.umask` method. The 5-to-6 documentation does reference
+the `IO.umask` as the replacement for Perl 5's `&umask` subroutine.
+
+**Current Behaviour:**
+- `role IO` is done by `IO::Handle` and `IO::Socket`
+- `.umask` is implemented by shelling out to `umask` command (not available
+    on Windows).
+
+**Proposed Change:**
+Remove the role, together with its `.umask` method.
+
+While `.umask` could be re-implemented with C and adding another nqp op,
+functionally the method is a bit of an outlier, compared to all the other
+methods currently available on the `IO::*` types. So while we might expand
+the core offerings in this area in the future, I believe the current
+implementation should be removed.
+
+With the `.umask` method gone, the `role IO` becomes empty, serving no purpose,
+and so it should be removed as well.
 
 
 ------------------------------
