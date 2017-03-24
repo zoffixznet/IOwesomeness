@@ -33,6 +33,4 @@ position in the file and using more than one at the same time will end in tears.
 
 --- ugexe │ the other IO thing i'd really like to see is IO::Socket to be IO::Handle or at least an IO interface for dealing with a a file handle *or* socket data
 
-
---- old map: 205 routines; 107 unique names; new map
-             220 routines; 112 unique names (+15; +5)
+-- IO::Pipe.t causes a segfault
