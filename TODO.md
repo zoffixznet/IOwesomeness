@@ -33,4 +33,6 @@ position in the file and using more than one at the same time will end in tears.
 
 --- ugexe │ the other IO thing i'd really like to see is IO::Socket to be IO::Handle or at least an IO interface for dealing with a a file handle *or* socket data
 
--- IO::Pipe.t causes a segfault
+-- IO::Pipe.t causes a segfault:
+
+--- Figure out a better way to pass flags to IO::Handle.lock() https://github.com/MoarVM/MoarVM/blob/a8448142d8b49a742a6b167907736d0ebbae9779/src/io/syncfile.c#L303-L358
