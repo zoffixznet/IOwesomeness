@@ -1,7 +1,7 @@
 ## Remove `IO::Path` Methods from `IO::Handle`
 
 - [✘] roast
-- [✔️] docs (partial and inaccurate: only `.e`, `.d`, `.f`, `.s`, `.l`, `.r`, `.w`, `.x` are present and they all refer to "the invocant" rather than
+- [✘] docs (partial and inaccurate: only `.e`, `.d`, `.f`, `.s`, `.l`, `.r`, `.w`, `.x` are present and they all refer to "the invocant" rather than
 `IO::Handle.path`, suggesting they're a verbatim copy-paste of `IO::Path` docs)
 
 **Affected Routines:**

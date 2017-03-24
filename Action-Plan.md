@@ -88,6 +88,57 @@ without providing any backwards compatible support.
 
 ------------------------------
 
+## Remove `IO::Path` Methods from `IO::Handle`
+
+- [✘] roast
+- [✔️] docs (partial and inaccurate: only `.e`, `.d`, `.f`, `.s`, `.l`, `.r`, `.w`, `.x` are present and they all refer to "the invocant" rather than
+`IO::Handle.path`, suggesting they're a verbatim copy-paste of `IO::Path` docs)
+
+**Affected Routines:**
+- `.watch`
+- `.chmod`
+- `.IO`
+- `.e`
+- `.d`
+- `.f`
+- `.s`
+- `.l`
+- `.r`
+- `.w`
+- `.x`
+- `.modified`
+- `.accessed`
+- `.changed`
+- `.mode`
+
+**Current behaviour:**
+The methods delegate to `IO::Handle`'s `$!path` attribute.
+
+**Proposed behaviour:**
+Remove all of these methods from `IO::Handle`.
+
+Reasoning:
+1) Most of these don't make any sense on subclasses of `IO::Handle`
+(`IO::Pipe` and `IO::ArgFiles` or the proposed `IO::CatHandle`); `.d` doesn't
+make sense even on an `IO::Handle` itself, as directories can't be `.open`ed;
+`.chmod` affects whether an object is `.open`-able in the first place, so,
+amusingly, it's possible to open a file for reading, then `.chmod` it to be
+unreadable, and then continue reading from it.
+2) The methods are unlikely to be oft-used and so the 5 characters of typing
+that they save (see point (3) below) isn't a useful saving.
+The usual progression goes from `Str` (a filename) to `IO::Path` (`Str.IO` call)
+to `IO::Handle` (`IO::Path.open` call). The point at which the information is
+gathered or actions are performed by the affected routines is generally at the
+`IO::Path` level, not `IO::Handle` level.
+3) All of these *and more* (`IO::Handle` does not provide `.rw`, `.rwx`, or
+`.z` methods) are still available via `IO::Path.path` attribute that, for
+`IO::Handle`, contains the path of the object the handle is opened on.
+Subclasses of `IO::Handle` that don't deal with paths can simply override
+*that* method instead of having to override the 15 affected routines.
+
+
+------------------------------
+
 ## Changes to `.Supply`
 
 - [✘] docs
@@ -400,6 +451,49 @@ be reversed:
 
 ------------------------------
 
+## Make `IO::Path.new-from-absolute-path` a private method
+
+- [✘] docs
+- [✘] roast
+
+**Current behaviour:**
+`.new-from-absolute-path` is a public method that, for optimization purposes,
+assumes the given path is most definitely an absolute path, and so it by-passes
+calls to `.absolute` and `.is-absolute` methods and fills up their cache
+directly with what was given to it.
+
+**Proposed behaviour:**
+
+Make this method a private method. Since no checks are performed on the
+path, use of this method is dangerous as it gives wildly inaccurate **and
+exploitable** results when the path is not infact absolute:
+`.is-absolute` always returns `True`; `.absolute` always returns the string
+the method was called with; `.perl` does not include `CWD`, so round-tripped
+value is **no longer an absolute path** and points to a relative resource,
+depending on the `CWD` set at the time of the `EVAL`; and while `.resolve`
+resolves to an absolute path, `.cleanup` ends up returning a path
+*relative to the `CWD` used at the time of path's creation*:
+
+```bash
+$ perl6 -e 'dd IO::Path.new-from-absolute-path("foo").is-absolute'
+Bool::True
+
+$ perl6 -e 'dd IO::Path.new-from-absolute-path("foo").absolute'
+Str $path = "foo"
+
+$ perl6 -e 'dd IO::Path.new-from-absolute-path("foo")'
+"foo".IO(:SPEC(IO::Spec::Unix))
+
+$ perl6 -e 'dd IO::Path.new-from-absolute-path("foo").resolve'
+"/foo".IO(:SPEC(IO::Spec::Unix))
+
+$ perl6 -e 'my $p = IO::Path.new-from-absolute-path("foo"); chdir "/tmp"; dd $p.cleanup'
+"foo".IO(:SPEC(IO::Spec::Unix),:CWD("/home/zoffix"))
+```
+
+
+------------------------------
+
 ## Make all routines that return paths return an `IO::Path` instead of `Str`
 
 **Affected routines:**
@@ -567,9 +661,7 @@ handles as one.
 If the idea is approved, more detailed design plan will be drafted first.
 Speaking in broad strokes, [in the past implementation](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e), `IO::CatPath` looks superflous—the implemented methods merely delegate
 to `IO::CatHandle` and the unimplemented methods that `IO::Path` has don't
-make much sense in `IO::CatPath`—and the fact that `IO::CatHandle` overrides
-half of the `IO::Handle` methods to simply throw, suggests there may be
-a better design to be discovered.
+make much sense in `IO::CatPath`.
 
 
 ------------------------------
