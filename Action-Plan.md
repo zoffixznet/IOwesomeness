@@ -1,3 +1,40 @@
+# Table of Contents
+- [IO Action Plan](IO-Action-Plan)
+    - [Terms and Conventions](Terms-and-Conventions)
+    - [Legend](Legend)
+- [Non-Conflicting Improvements](Non-Conflicting-Improvements)
+        - [`IO::CatPath` and `IO::CatHandle`](-IO--CatPath--and--IO--CatHandle-)
+        - [`IO::Handle`'s Closed status](-IO--Handle--s-Closed-status)
+        - [`IO::Path` routines that involve a stat call](-IO--Path--routines-that-involve-a-stat-call)
+        - [`IO::Path.extension`](-IO--Path-extension-)
+        - [`IO.umask`](-IO-umask-)
+        - [Make `IO::Path.resolve` fail if it can't resolve path](Make--IO--Path-resolve--fail-if-it-can-t-resolve-path)
+        - [Remove `:bin` parameter on `&spurt` / `IO::Path.spurt`](Remove---bin--parameter-on---spurt-----IO--Path-spurt-)
+        - [Make `&words` default to `$*ARGFILES`](Make---words--default-to----ARGFILES-)
+- [Changes with Backwards-Compatible Support](Changes-with-Backwards-Compatible-Support)
+        - [`IO::Handle.seek` seek reference](-IO--Handle-seek--seek-reference)
+        - [Rename `IO::Handle.slurp-rest` to just `.slurp`](Rename--IO--Handle-slurp-rest--to-just---slurp-)
+        - [`:$test` parameter on multiple routines](---test--parameter-on-multiple-routines)
+- [BEFORE:](BEFORE-)
+- [AFTER:](AFTER-)
+- [Changes with No Backwards-Compatible Support](Changes-with-No-Backwards-Compatible-Support)
+    - [Changes to `.Supply`](Changes-to---Supply-)
+    - [Make `IO::Path.abspath` a private method](Make--IO--Path-abspath--a-private-method)
+    - [Make `IO::Path.child` fail for non-child paths / Add `IO::Path.concat-with`](Make--IO--Path-child--fail-for-non-child-paths---Add--IO--Path-concat-with-)
+    - [Make `:close` behaviour the default in `IO::Handle` and Its Subclasses](Make---close--behaviour-the-default-in--IO--Handle--and-Its-Subclasses)
+    - [Changes to behaviour of `.lines`, `.words`, `.split`, `.comb`](Changes-to-behaviour-of---lines-----words-----split-----comb-)
+    - [Change order of arguments in `&link`/`&symlink`](Change-order-of-arguments-in---link----symlink-)
+    - [Make `IO::Path.new-from-absolute-path` a private method](Make--IO--Path-new-from-absolute-path--a-private-method)
+- [Controversial Changes](Controversial-Changes)
+    - [Make `IO::Path.is-absolute` Give False for `/` path on Windows](Make--IO--Path-is-absolute--Give-False-for-----path-on-Windows)
+- [Removals](Removals)
+    - [Remove `IO::Path` Methods from `IO::Handle`](Remove--IO--Path--Methods-from--IO--Handle-)
+        - [`&homedir`](--homedir-)
+        - [`&tmpdir`](--tmpdir-)
+    - [Bug Fixes](Bug-Fixes)
+            - [RT Tickets](RT-Tickets)
+            - [GitHub Issues](GitHub-Issues)
+            - [Other Issues](Other-Issues)
 # IO Action Plan
 
 This document is a deliverable of [TPF Standardization, Test Coverage, and
@@ -42,99 +79,284 @@ argument); not entire routines.
 
 
 ------------------------------
+
+# Non-Conflicting Improvements
+
+The changes proposed in this section do not change current behaviour and merely
+enhance it or add new, non-conflicting features.
+
+
 ------------------------------
 
-## Removals
+### `IO::CatPath` and `IO::CatHandle`
 
-The changes in this section propose the immediate removal of routines, with
-no deprecation period.
+**Current Behaviour:**
+- `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff
+
+**Proposed Change:**
+All of the changes are proposed for 6.d. We bring back a generalized version of
+what `IO::ArgFiles` currently does: an ability to seamlessly treat multiple
+handles as one.
+
+If the idea is approved, more detailed design plan will be drafted first.
+Speaking in broad strokes, [in the past implementation](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e), `IO::CatPath` looks superflous—the implemented methods merely delegate
+to `IO::CatHandle` and the unimplemented methods that `IO::Path` has don't
+make much sense in `IO::CatPath`.
 
 
 ------------------------------
 
-### `&homedir`
+### `IO::Handle`'s Closed status
 
-- [✘] docs
+**Current Behaviour:**
+- When a IO::Handle is closed, its $!PIO atribute is set to nqp::null. This
+causes calls to many methods on a closed file handle to return LTA error,
+such as `foo requires an object with REPR MVMOSHandle`.
+
+**Proposed Change:**
+- On handle close, mixin a role that overrides all the relevant methods
+to throw/fail with an error. This will give the same behaviour as adding
+`if nqp::isnull($!PIO) { ... throw ... }` to all the methods, without a
+performance impact to open handles (it was ~5% when such check was added to
+`.lines` iterator)
+
+
+------------------------------
+
+### `IO::Path` routines that involve a stat call
+
+**Routine List:**
+
+`.d`, `.f`, `.l`, `.r`, `.s`, `.w`, `.x`, `.z`, `.rw`, `.rwx`, `.modified`, `.accessed`, `.changed`, `.mode`
+
+**Current Behaviour:**
+Each test goes out to VM to perform several `stat` calls (other than `.e` that
+performs just one). For example, a single `.rwx` call performs 4 `stat` calls.
+Based on IRC conversation, `stat` call is expensive and caching its results
+can be beneficial.
+
+**Proposed Change:**
+Change `nqp::const::STAT*` constants to be powers of 2. Add
+`nqp::stat_multi` op that will take bitwise-ORed `nqp::const::STAT*` constants
+representing the pieces of stat information to be returned as a hash. This
+will let us perform a single stat call to fetch all of the required information.
+
+(related discussion: https://irclog.perlgeek.de/perl6-dev/2017-03-06#i_14213924)
+
+
+------------------------------
+
+### `IO::Path.extension`
+
+It's not uncommon to see users asking on IRC how to
+obtain or modify an extension of a path. Depending on what is needed, the answer
+is usually a gnarly-looking `.subst` or `.split`+`.join` invocation. In
+addition, often the desired extension for files like `foo.tar.gz` would be
+`tar.gz`, yet the current `.extension` does not offer a means to obtain it.
+
+The following changes are proposed:
+
+- Add `:$parts = 1` named parameter that specifies how many parts (the
+    `.whatever` segments, counting from end) to consider as the extension.
+    That is `'foo.tar.gz'.IO.extension` returns `'gz'`,
+    `'foo.tar.gz'.IO.extension: :2parts` returns `'tar.gz'`, and
+    `'foo.tar.gz'.IO.extension: :3parts` returns `''` (signaling there is no
+        [3-part] extension on the file).
+
+    In the future we can extend this to take a `Range` or `Junction` of values,
+    but for now, just a single `UInt` should be sufficient. The default value
+    of `1` preserves the current behaviour of the routine. Value of `0` always
+    makes routine return an empty string.
+- Add a candidate that accepts a positional `$replacement` argument. This
+    candidate will return a new `IO::Path` object, with the extension
+    changed to the the `$replacement`. The user can set the `:parts` argument
+    to `0` if they want to *append* an extra extension. The operation is
+    equivalent to:
+
+    ```perl6
+        my $new-ext = 'txt';
+        say (.substr(0, .chars - .extension.chars) ~ $new-ext).IO
+            with 'foo.tar.gz'.IO
+        # OUTPUT: «"foo.tar.txt".IO␤»
+    ```
+
+    Note: since `.extension` returns the extension without the leading dot,
+    the replacement string does not have it either. However, since the users
+    may be inclined to include it, we should warn if it is included.
+
+
+------------------------------
+
+### `IO.umask`
+
+**Current Behaviour:**
+- shell out to `umask` and parse output as octal string. On OSes without
+`umask` this produces output that `umask` isn't a recognized command and then
+returns a `Failure` with `X::Str::Numeric` exception.
+
+**Proposed Change:**
+- Use proper detection for whether running `umask` succeeded and returning
+an appropriate Failure in cases where it doesn't. Only then attempt to
+decode the output.
+
+
+------------------------------
+
+### Make `IO::Path.resolve` fail if it can't resolve path
+
+**Current behaviour:**
+`.resolve` will attempt to access the filesystem and resolve all the links,
+but will stop resolving as soon as it hits a non-existent path; all further
+parts will be merely cleaned up (e.g. `foo///../` will have duplicated slashes
+removed, but the `../` part will remain).
+
+**Proposed behaviour:**
+Add `Bool :$completely` parameter that, when specified as `True`, will cause
+`.resolve` to `fail` if cannot fully resolve the path.
+
+
+------------------------------
+
+### Remove `:bin` parameter on `&spurt` / `IO::Path.spurt`
+
+- [✔️] docs
 - [✘] roast
 
-Saves typing half a single line of code and is rarely needed.
-The user will set `$*HOME` variable directly, using `my ...` to
-localize the effects, and using `.= chdir` if any directory tests need to be
-done.
+**Current Behaviour:**
+The argument is ignored. The binary mode is enabled based on whether or not
+the spurted `$content` is a `Blob`.
+
+**Proposed Change:**
+Remove and un-document the argument.
 
 
 ------------------------------
 
-### `&tmpdir`
+### Make `&words` default to `$*ARGFILES`
 
-- [✘] docs
-- [✘] roast
-- [✘] routine is broken and never worked since Christmas
+**Current behaviour:**
+`&lines`, `&get`, and `&getc` (or "all lines", "one line", and "one char")
+default to using `$*ARGFILES`. `&words` (or "all words") exceptionally doesn't
+and throws instead.
 
-Saves typing half a single line of code and is rarely needed.
-The user will set `$*TMPDIR` variable directly, using `my ...` to
-localize the effects, and using `.= chdir` if any directory tests need to be
-done.
+**Proposed behaviour:**
+Make `&words` default to `$*ARGFILES`, just like the rest of the routines
+in this family.
 
 
 ------------------------------
+
+# Changes with Backwards-Compatible Support
+
+The changes proposed in this section allow for retention of old behaviour.
+It is proposed the old behaviour to be removed entirely in 6.d language.
+
+Note: since our current infrastructure for 6.d language is **additive,** the
+behaviour proposed for removal in 6.d might not end up actually being removed
+from the code, but instead marked as deprecated with warnings/exceptions issued
+on use (and appropriately documented as being obsolete).
+
+
 ------------------------------
 
-## Changes with No Backwards-Compatible Support
+### `IO::Handle.seek` seek reference [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/1)
+
+- [✔️] docs
+- [✔️] master roast
+- [✘] 6.c-errata roast
+
+**Current behaviour**:
+- The seek reference is taken as an enum which is globally available and is
+somewhat long to type: `SeekFromBeginning`, `SeekFromCurrent`, `SeekFromEnd`.
+`.seek` is nearly unique in using such a calling convention.
+
+**Proposed change**:
+- Use mutually exclusive named arguments instead: `:from-start`,
+`:from-current`, and `:from-end`. The old enums will be kept in 6.c language and
+will be removed in 6.d.
+
+
+------------------------------
+
+### Rename `IO::Handle.slurp-rest` to just `.slurp`
+
+- [✔️] docs
+- [✔️] roast
+
+**Current behaviour**:
+There are thematically related routines `comb` (all the characters),
+`words` (all the words), `lines` (all the lines), and `slurp` (all the stuff).
+All but the last are present as subroutines and as methods on `IO::Path`,
+`IO::ArgFiles`, `IO::Path`, and `IO::Pipe`.
+
+With respect to `&slurp`, there is sub `&slurp` and method `.slurp` on `IO::Path` and `IO::ArgFiles`. The `IO::Handle` and `IO::Pipe` name it
+`.slurp-rest` instead. Since `IO::ArgFiles is IO::Handle`, it also has a
+`.slurp-rest`, but it's broken and unusable.
+
+**Proposed change**:
+Rename `.slurp-rest` to just `.slurp` in 6.d language and make use of
+`.slurp-rest` issue a deprecation warning.
+
+I can surmise the name change in `IO::Handle` and its subclasses was meant to
+be indicative that `.slurp-rest` only slurps **from the current file position**.
+However, this caveat applies to every single read method in `IO::Handle`:
+`.slurp`, `.lines`, `.words`, `.comb`, `.get`, `.getc`, `.getchars`. Yet, all
+but `.slurp` do not have `-rest` in their name, as the behaviour is implied.
+
+The longer name is even more absurd in `IO::Pipe`, on which `.seek` cannot be
+used.
+
+
+------------------------------
+
+### `:$test` parameter on multiple routines
+
+**Affected routines:**
+- `IO::Path.chdir` / `&chdir`
+- `&indir`
+- `&homedir` *(proposed for removal)*
+- `&tmpdir` *(proposed for removal)*
+
+**Current behaviour:**
+
+The affected routines take `:$test` parameter as a string (or
+`Positional` that's later stringified) of tests to perform on a directory.
+It's difficult to remember the correct order and currently it's very easy
+to give an argument that will incorrectly report the directory as failing the
+test: `chdir "/tmp/", :test<r w>` succeeds, while `:test<rw>` or `:test<w r`>
+fail.
+
+**Proposed behaviour:**
+
+It is proposed the `:$test` parameter to be replaced with 4 boolean named
+parameters `:$r, :$w, :$x, :$d`, with `:$d` (is it directory) test to be
+enabled by default. Usage then becomes:
+
+```perl6
+# BEFORE:
+indir :test<r w x>, '/tmp/foo', { dir.say } # Good
+indir :test<w r x>, '/tmp/foo', { dir.say } # Bad. Wrong order
+
+# AFTER:
+indir :r:w:x, '/tmp/foo', { dir.say } # Good
+indir :w:r:x, '/tmp/foo', { dir.say } # Still good
+indir :x:r:w, '/tmp/foo', { dir.say } # Still good
+```
+
+Note that as part of this change, it is proposed all of the aforementioned
+*Affected Routines* default to only using the `:d` test. Doing so will also
+resolve [RT#130460](https://rt.perl.org/Ticket/Display.html?id=130460).
+
+To preserve backwards compatibility, the `:$test` parameter will remain for
+6.c language and will be removed in 6.d language.
+
+
+------------------------------
+
+# Changes with No Backwards-Compatible Support
 
 The changes in this section propose for an immediate change of behaviour,
 without providing any backwards compatible support.
-
-
-------------------------------
-
-## Remove `IO::Path` Methods from `IO::Handle`
-
-- [✘] roast
-- [✔️] docs (partial and inaccurate: only `.e`, `.d`, `.f`, `.s`, `.l`, `.r`, `.w`, `.x` are present and they all refer to "the invocant" rather than
-`IO::Handle.path`, suggesting they're a verbatim copy-paste of `IO::Path` docs)
-
-**Affected Routines:**
-- `.watch`
-- `.chmod`
-- `.IO`
-- `.e`
-- `.d`
-- `.f`
-- `.s`
-- `.l`
-- `.r`
-- `.w`
-- `.x`
-- `.modified`
-- `.accessed`
-- `.changed`
-- `.mode`
-
-**Current behaviour:**
-The methods delegate to `IO::Handle`'s `$!path` attribute.
-
-**Proposed behaviour:**
-Remove all of these methods from `IO::Handle`.
-
-Reasoning:
-1) Most of these don't make any sense on subclasses of `IO::Handle`
-(`IO::Pipe` and `IO::ArgFiles` or the proposed `IO::CatHandle`); `.d` doesn't
-make sense even on an `IO::Handle` itself, as directories can't be `.open`ed;
-`.chmod` affects whether an object is `.open`-able in the first place, so,
-amusingly, it's possible to open a file for reading, then `.chmod` it to be
-unreadable, and then continue reading from it.
-2) The methods are unlikely to be oft-used and so the 5 characters of typing
-that they save (see point (3) below) isn't a useful saving.
-The usual progression goes from `Str` (a filename) to `IO::Path` (`Str.IO` call)
-to `IO::Handle` (`IO::Path.open` call). The point at which the information is
-gathered or actions are performed by the affected routines is generally at the
-`IO::Path` level, not `IO::Handle` level.
-3) All of these *and more* (`IO::Handle` does not provide `.rw`, `.rwx`, or
-`.z` methods) are still available via `IO::Path.path` attribute that, for
-`IO::Handle`, contains the path of the object the handle is opened on.
-Subclasses of `IO::Handle` that don't deal with paths can simply override
-*that* method instead of having to override the 15 affected routines.
 
 
 ------------------------------
@@ -494,320 +716,7 @@ $ perl6 -e 'my $p = IO::Path.new-from-absolute-path("foo"); chdir "/tmp"; dd $p.
 
 ------------------------------
 
-## Make all routines that return paths return an `IO::Path` instead of `Str`
-
-**Affected routines:**
-- `IO::Path.absolute`
-- `IO::Path.relative`
-
-**Current behaviour:**
-The routines return a `Str`
-
-**Proposed behaviour:**
-Return an `IO::Path` instead, with its `.Str` producing the same `Str` as
-currently returned by the routines.
-
-Currently some IO routines return an `IO::Path` and some `Str`. Lack of consistency makes it tricky to remember which returns
-which, and leads to superstitious `.IO` methods tacked on by users.
-
-It is proposed all routines that return "a path" return an `IO::Path` object
-instead of `Str`. The only exceptions are `$.CWD` and `$.path` attributes of
-`IO::Path` (n.b.: `$.CWD` should likely be an `IO::Path`).
-
-Since `IO::Path` is `Cool`, it will still stringify and
-maintain the old `Str` behaviour. The only backwards-compatibility issue this
-change would present is in explicit type check (e.g.
-`my Str $x = ".".IO.absolute` would now throw). If this is unacceptable, then it
-is to be implemented under 6.d.PREVIEW pragma. If any changes break 6.c-errata
-tests, the changes will be made in 6.d language instead.
-
-**Additional notes for individual routines:**
-
-- `IO::Path.relative` and `$*SPEC.abs2rel` return a `Str` that only works for
-the `CWD` used when the `Str` was generated. Any later `&chdir` calls will make
-its value wrong, whereas if an `IO::Path` object were returned, it wouldn't be
-affected.
-
-
-------------------------------
-------------------------------
-
-## Changes with Backwards-Compatible Support
-
-The changes proposed in this section allow for retention of old behaviour.
-It is proposed the old behaviour to be removed entirely in 6.d language.
-
-Note: since our current infrastructure for 6.d language is **additive,** the
-behaviour proposed for removal in 6.d might not end up actually being removed
-from the code, but instead marked as deprecated with warnings/exceptions issued
-on use (and appropriately documented as being obsolete).
-
-
-------------------------------
-
-### `IO::Handle.seek` seek reference [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/1)
-
-- [✔️] docs
-- [✔️] master roast
-- [✘] 6.c-errata roast
-
-**Current behaviour**:
-- The seek reference is taken as an enum which is globally available and is
-somewhat long to type: `SeekFromBeginning`, `SeekFromCurrent`, `SeekFromEnd`.
-`.seek` is nearly unique in using such a calling convention.
-
-**Proposed change**:
-- Use mutually exclusive named arguments instead: `:from-start`,
-`:from-current`, and `:from-end`. The old enums will be kept in 6.c language and
-will be removed in 6.d.
-
-
-------------------------------
-
-### Rename `IO::Handle.slurp-rest` to just `.slurp`
-
-- [✔️] docs
-- [✔️] roast
-
-**Current behaviour**:
-There are thematically related routines `comb` (all the characters),
-`words` (all the words), `lines` (all the lines), and `slurp` (all the stuff).
-All but the last are present as subroutines and as methods on `IO::Path`,
-`IO::ArgFiles`, `IO::Path`, and `IO::Pipe`.
-
-With respect to `&slurp`, there is sub `&slurp` and method `.slurp` on `IO::Path` and `IO::ArgFiles`. The `IO::Handle` and `IO::Pipe` name it
-`.slurp-rest` instead. Since `IO::ArgFiles is IO::Handle`, it also has a
-`.slurp-rest`, but it's broken and unusable.
-
-**Proposed change**:
-Rename `.slurp-rest` to just `.slurp` in 6.d language and make use of
-`.slurp-rest` issue a deprecation warning.
-
-I can surmise the name change in `IO::Handle` and its subclasses was meant to
-be indicative that `.slurp-rest` only slurps **from the current file position**.
-However, this caveat applies to every single read method in `IO::Handle`:
-`.slurp`, `.lines`, `.words`, `.comb`, `.get`, `.getc`, `.getchars`. Yet, all
-but `.slurp` do not have `-rest` in their name, as the behaviour is implied.
-
-The longer name is even more absurd in `IO::Pipe`, on which `.seek` cannot be
-used.
-
-
-------------------------------
-
-### `:$test` parameter on multiple routines
-
-**Affected routines:**
-- `IO::Path.chdir` / `&chdir`
-- `&indir`
-- `&homedir` *(proposed for removal)*
-- `&tmpdir` *(proposed for removal)*
-
-**Current behaviour:**
-
-The affected routines take `:$test` parameter as a string (or
-`Positional` that's later stringified) of tests to perform on a directory.
-It's difficult to remember the correct order and currently it's very easy
-to give an argument that will incorrectly report the directory as failing the
-test: `chdir "/tmp/", :test<r w>` succeeds, while `:test<rw>` or `:test<w r`>
-fail.
-
-**Proposed behaviour:**
-
-It is proposed the `:$test` parameter to be replaced with 4 boolean named
-parameters `:$r, :$w, :$x, :$d`, with `:$d` (is it directory) test to be
-enabled by default. Usage then becomes:
-
-```perl6
-# BEFORE:
-indir :test<r w x>, '/tmp/foo', { dir.say } # Good
-indir :test<w r x>, '/tmp/foo', { dir.say } # Bad. Wrong order
-
-# AFTER:
-indir :r:w:x, '/tmp/foo', { dir.say } # Good
-indir :w:r:x, '/tmp/foo', { dir.say } # Still good
-indir :x:r:w, '/tmp/foo', { dir.say } # Still good
-```
-
-Note that as part of this change, it is proposed all of the aforementioned
-*Affected Routines* default to only using the `:d` test. Doing so will also
-resolve [RT#130460](https://rt.perl.org/Ticket/Display.html?id=130460).
-
-To preserve backwards compatibility, the `:$test` parameter will remain for
-6.c language and will be removed in 6.d language.
-
-
-------------------------------
-------------------------------
-
-## Non-Conflicting Improvements
-
-The changes proposed in this section do not change current behaviour and merely
-enhance it or add new, non-conflicting features.
-
-
-------------------------------
-
-### `IO::CatPath` and `IO::CatHandle`
-
-**Current Behaviour:**
-- `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff
-
-**Proposed Change:**
-All of the changes are proposed for 6.d. We bring back a generalized version of
-what `IO::ArgFiles` currently does: an ability to seamlessly treat multiple
-handles as one.
-
-If the idea is approved, more detailed design plan will be drafted first.
-Speaking in broad strokes, [in the past implementation](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e), `IO::CatPath` looks superflous—the implemented methods merely delegate
-to `IO::CatHandle` and the unimplemented methods that `IO::Path` has don't
-make much sense in `IO::CatPath`.
-
-
-------------------------------
-
-### `IO::Handle`'s Closed status
-
-**Current Behaviour:**
-- When a IO::Handle is closed, its $!PIO atribute is set to nqp::null. This
-causes calls to many methods on a closed file handle to return LTA error,
-such as `foo requires an object with REPR MVMOSHandle`.
-
-**Proposed Change:**
-- On handle close, mixin a role that overrides all the relevant methods
-to throw/fail with an error. This will give the same behaviour as adding
-`if nqp::isnull($!PIO) { ... throw ... }` to all the methods, without a
-performance impact to open handles (it was ~5% when such check was added to
-`.lines` iterator)
-
-
-------------------------------
-
-### `IO::Path` routines that involve a stat call
-
-**Routine List:**
-
-`.d`, `.f`, `.l`, `.r`, `.s`, `.w`, `.x`, `.z`, `.rw`, `.rwx`, `.modified`, `.accessed`, `.changed`, `.mode`
-
-**Current Behaviour:**
-Each test goes out to VM to perform several `stat` calls (other than `.e` that
-performs just one). For example, a single `.rwx` call performs 4 `stat` calls.
-Based on IRC conversation, `stat` call is expensive and caching its results
-can be beneficial.
-
-**Proposed Change:**
-Change `nqp::const::STAT*` constants to be powers of 2. Add
-`nqp::stat_multi` op that will take bitwise-ORed `nqp::const::STAT*` constants
-representing the pieces of stat information to be returned as a hash. This
-will let us perform a single stat call to fetch all of the required information.
-
-(related discussion: https://irclog.perlgeek.de/perl6-dev/2017-03-06#i_14213924)
-
-
-------------------------------
-
-### `IO::Path.extension`
-
-It's not uncommon to see users asking on IRC how to
-obtain or modify an extension of a path. Depending on what is needed, the answer
-is usually a gnarly-looking `.subst` or `.split`+`.join` invocation. In
-addition, often the desired extension for files like `foo.tar.gz` would be
-`tar.gz`, yet the current `.extension` does not offer a means to obtain it.
-
-The following changes are proposed:
-
-- Add `:$parts = 1` named parameter that specifies how many parts (the
-    `.whatever` segments, counting from end) to consider as the extension.
-    That is `'foo.tar.gz'.IO.extension` returns `'gz'`,
-    `'foo.tar.gz'.IO.extension: :2parts` returns `'tar.gz'`, and
-    `'foo.tar.gz'.IO.extension: :3parts` returns `''` (signaling there is no
-        [3-part] extension on the file).
-
-    In the future we can extend this to take a `Range` or `Junction` of values,
-    but for now, just a single `UInt` should be sufficient. The default value
-    of `1` preserves the current behaviour of the routine. Value of `0` always
-    makes routine return an empty string.
-- Add a candidate that accepts a positional `$replacement` argument. This
-    candidate will return a new `IO::Path` object, with the extension
-    changed to the the `$replacement`. The user can set the `:parts` argument
-    to `0` if they want to *append* an extra extension. The operation is
-    equivalent to:
-
-    ```perl6
-        my $new-ext = 'txt';
-        say (.substr(0, .chars - .extension.chars) ~ $new-ext).IO
-            with 'foo.tar.gz'.IO
-        # OUTPUT: «"foo.tar.txt".IO␤»
-    ```
-
-    Note: since `.extension` returns the extension without the leading dot,
-    the replacement string does not have it either. However, since the users
-    may be inclined to include it, we should warn if it is included.
-
-
-------------------------------
-
-### `IO.umask`
-
-**Current Behaviour:**
-- shell out to `umask` and parse output as octal string. On OSes without
-`umask` this produces output that `umask` isn't a recognized command and then
-returns a `Failure` with `X::Str::Numeric` exception.
-
-**Proposed Change:**
-- Use proper detection for whether running `umask` succeeded and returning
-an appropriate Failure in cases where it doesn't. Only then attempt to
-decode the output.
-
-
-------------------------------
-
-## Make `IO::Path.resolve` fail if it can't resolve path
-
-**Current behaviour:**
-`.resolve` will attempt to access the filesystem and resolve all the links,
-but will stop resolving as soon as it hits a non-existent path; all further
-parts will be merely cleaned up (e.g. `foo///../` will have duplicated slashes
-removed, but the `../` part will remain).
-
-**Proposed behaviour:**
-Add `Bool :$completely` parameter that, when specified as `True`, will cause
-`.resolve` to `fail` if cannot fully resolve the path.
-
-
-------------------------------
-
-### Remove `:bin` parameter on `&spurt` / `IO::Path.spurt`
-
-- [✔️] docs
-- [✘] roast
-
-**Current Behaviour:**
-The argument is ignored. The binary mode is enabled based on whether or not
-the spurted `$content` is a `Blob`.
-
-**Proposed Change:**
-Remove and un-document the argument.
-
-
-------------------------------
-
-## Make `&words` default to `$*ARGFILES`
-
-**Current behaviour:**
-`&lines`, `&get`, and `&getc` (or "all lines", "one line", and "one char")
-default to using `$*ARGFILES`. `&words` (or "all words") exceptionally doesn't
-and throws instead.
-
-**Proposed behaviour:**
-Make `&words` default to `$*ARGFILES`, just like the rest of the routines
-in this family.
-
-
-------------------------------
-------------------------------
-
-## Controversial Changes
+# Controversial Changes
 
 I'm not 100% sure whether the changes in this section actually need to be made,
 as they appear to be deliberately introduced behaviours; I'm just unsure of
@@ -836,6 +745,91 @@ by the `.is-absolute` method.
 
 
 ------------------------------
+
+# Removals
+
+The changes in this section propose the immediate removal of routines, with
+no deprecation period.
+
+
+------------------------------
+
+## Remove `IO::Path` Methods from `IO::Handle`
+
+- [✘] roast
+- [✘] docs (partial and inaccurate: only `.e`, `.d`, `.f`, `.s`, `.l`, `.r`, `.w`, `.x` are present and they all refer to "the invocant" rather than
+`IO::Handle.path`, suggesting they're a verbatim copy-paste of `IO::Path` docs)
+
+**Affected Routines:**
+- `.watch`
+- `.chmod`
+- `.IO`
+- `.e`
+- `.d`
+- `.f`
+- `.s`
+- `.l`
+- `.r`
+- `.w`
+- `.x`
+- `.modified`
+- `.accessed`
+- `.changed`
+- `.mode`
+
+**Current behaviour:**
+The methods delegate to `IO::Handle`'s `$!path` attribute.
+
+**Proposed behaviour:**
+Remove all of these methods from `IO::Handle`.
+
+Reasoning:
+1) Most of these don't make any sense on subclasses of `IO::Handle`
+(`IO::Pipe` and `IO::ArgFiles` or the proposed `IO::CatHandle`); `.d` doesn't
+make sense even on an `IO::Handle` itself, as directories can't be `.open`ed;
+`.chmod` affects whether an object is `.open`-able in the first place, so,
+amusingly, it's possible to open a file for reading, then `.chmod` it to be
+unreadable, and then continue reading from it.
+2) The methods are unlikely to be oft-used and so the 5 characters of typing
+that they save (see point (3) below) isn't a useful saving.
+The usual progression goes from `Str` (a filename) to `IO::Path` (`Str.IO` call)
+to `IO::Handle` (`IO::Path.open` call). The point at which the information is
+gathered or actions are performed by the affected routines is generally at the
+`IO::Path` level, not `IO::Handle` level.
+3) All of these *and more* (`IO::Handle` does not provide `.rw`, `.rwx`, or
+`.z` methods) are still available via `IO::Path.path` attribute that, for
+`IO::Handle`, contains the path of the object the handle is opened on.
+Subclasses of `IO::Handle` that don't deal with paths can simply override
+*that* method instead of having to override the 15 affected routines.
+
+
+------------------------------
+
+### `&homedir`
+
+- [✘] docs
+- [✘] roast
+
+Saves typing half a single line of code and is rarely needed.
+The user will set `$*HOME` variable directly, using `my ...` to
+localize the effects, and using `.= chdir` if any directory tests need to be
+done.
+
+
+------------------------------
+
+### `&tmpdir`
+
+- [✘] docs
+- [✘] roast
+- [✘] routine is broken and never worked since Christmas
+
+Saves typing half a single line of code and is rarely needed.
+The user will set `$*TMPDIR` variable directly, using `my ...` to
+localize the effects, and using `.= chdir` if any directory tests need to be
+done.
+
+
 ------------------------------
 
 ## Bug Fixes

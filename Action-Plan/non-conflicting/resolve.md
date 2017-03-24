@@ -1,4 +1,4 @@
-## Make `IO::Path.resolve` fail if it can't resolve path
+### Make `IO::Path.resolve` fail if it can't resolve path
 
 **Current behaviour:**
 `.resolve` will attempt to access the filesystem and resolve all the links,

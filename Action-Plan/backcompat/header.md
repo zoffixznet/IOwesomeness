@@ -1,4 +1,4 @@
-# ███ Changes with Backwards-Compatible Support ███
+# Changes with Backwards-Compatible Support
 
 The changes proposed in this section allow for retention of old behaviour.
 It is proposed the old behaviour to be removed entirely in 6.d language.
