@@ -22,14 +22,14 @@ parameters `:$r, :$w, :$x, :$d`, with `:$d` (is it directory) test to be
 enabled by default. Usage then becomes:
 
 ```perl6
-# BEFORE:
-indir :test<r w x>, '/tmp/foo', { dir.say } # Good
-indir :test<w r x>, '/tmp/foo', { dir.say } # Bad. Wrong order
+    # BEFORE:
+    indir :test<r w x>, '/tmp/foo', { dir.say } # Good
+    indir :test<w r x>, '/tmp/foo', { dir.say } # Bad. Wrong order
 
-# AFTER:
-indir :r:w:x, '/tmp/foo', { dir.say } # Good
-indir :w:r:x, '/tmp/foo', { dir.say } # Still good
-indir :x:r:w, '/tmp/foo', { dir.say } # Still good
+    # AFTER:
+    indir :r:w:x, '/tmp/foo', { dir.say } # Good
+    indir :w:r:x, '/tmp/foo', { dir.say } # Still good
+    indir :x:r:w, '/tmp/foo', { dir.say } # Still good
 ```
 
 Note that as part of this change, it is proposed all of the aforementioned

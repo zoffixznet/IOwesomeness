@@ -14,8 +14,6 @@
         - [`IO::Handle.seek` seek reference](-IO--Handle-seek--seek-reference)
         - [Rename `IO::Handle.slurp-rest` to just `.slurp`](Rename--IO--Handle-slurp-rest--to-just---slurp-)
         - [`:$test` parameter on multiple routines](---test--parameter-on-multiple-routines)
-- [BEFORE:](BEFORE-)
-- [AFTER:](AFTER-)
 - [Changes with No Backwards-Compatible Support](Changes-with-No-Backwards-Compatible-Support)
     - [Changes to `.Supply`](Changes-to---Supply-)
     - [Make `IO::Path.abspath` a private method](Make--IO--Path-abspath--a-private-method)
@@ -328,14 +326,14 @@ parameters `:$r, :$w, :$x, :$d`, with `:$d` (is it directory) test to be
 enabled by default. Usage then becomes:
 
 ```perl6
-# BEFORE:
-indir :test<r w x>, '/tmp/foo', { dir.say } # Good
-indir :test<w r x>, '/tmp/foo', { dir.say } # Bad. Wrong order
+    # BEFORE:
+    indir :test<r w x>, '/tmp/foo', { dir.say } # Good
+    indir :test<w r x>, '/tmp/foo', { dir.say } # Bad. Wrong order
 
-# AFTER:
-indir :r:w:x, '/tmp/foo', { dir.say } # Good
-indir :w:r:x, '/tmp/foo', { dir.say } # Still good
-indir :x:r:w, '/tmp/foo', { dir.say } # Still good
+    # AFTER:
+    indir :r:w:x, '/tmp/foo', { dir.say } # Good
+    indir :w:r:x, '/tmp/foo', { dir.say } # Still good
+    indir :x:r:w, '/tmp/foo', { dir.say } # Still good
 ```
 
 Note that as part of this change, it is proposed all of the aforementioned
