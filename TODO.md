@@ -26,6 +26,4 @@ position in the file and using more than one at the same time will end in tears.
 
 Pre-Flight:
 
-- Sort out typing on IO::Path's $!CWD, $!path and IO::Handle's $!path
-
 --- Figure out a better way to pass flags to IO::Handle.lock() https://github.com/MoarVM/MoarVM/blob/a8448142d8b49a742a6b167907736d0ebbae9779/src/io/syncfile.c#L303-L358
