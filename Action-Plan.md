@@ -245,7 +245,8 @@ Add `Bool :$completely` parameter that, when specified as `True`, will cause
 
 **Current behaviour:**
 
-`&lines`, `&get`, and `&getc` (or, semantically "all lines", "one line",
+`&slurp`, `&lines`, `&get`, and `&getc`
+(or, semantically, "whole thing", "all lines", "one line",
 and "one char") default to using `$*ARGFILES`. `&words` (or "all words")
 exceptionally doesn't and throws instead.
 
