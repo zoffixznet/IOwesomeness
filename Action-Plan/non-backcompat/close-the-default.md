@@ -4,6 +4,7 @@
 - [✘] roast (`:close` is *used* in tests for `.words` and `.comb` but its functionality is not tested)
 
 **Current behaviour:**
+
 The routines `&slurp`, `IO::Path.slurp`, `&lines`, `IO::Path.lines`, `&comb`,
 `IO::Path.comb`, `IO::Path.words`, `IO::Path.split`, and the
 corresponding `IO::ArgFiles` routines **close the filehandle at the end**
@@ -15,6 +16,7 @@ showed omitting `:close` on `IO::Pipe.slurp-rest` in a 3000-iteration loop
 causes a coredump on circa 2017.02 Rakudo)
 
 **Proposed behaviour:**
+
 - Remove `:close` parameter
 - Add `:keep-open` `Bool` parameter that defaults to `False`. Close the
 handle when the iterator is exhausted, unless `:keep-open` parameter is set
