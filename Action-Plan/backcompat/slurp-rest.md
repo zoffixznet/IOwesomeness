@@ -28,7 +28,8 @@ In fact, `Seq`-returning methods even interact with each other when called
 on the same handle, as the file position being advanced by one iterator affects
 what the next item in another `Seq` will be. Thus, knowledge about the effect of
 file position on all of these methods is *essential,* and so requiring all users
-to use a longer name as a reminder lest they forget is antisocial.
+to use a longer name as a reminder lest they forget about this behaviour
+in slurps is antisocial.
 
 The longer name is even more bizarre in `IO::Pipe`, on which `.seek` cannot be
 used.
