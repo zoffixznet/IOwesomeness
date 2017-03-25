@@ -24,6 +24,9 @@ be indicative that `.slurp-rest` only slurps **from the current file position**.
 However, this caveat applies to every single read method in `IO::Handle`:
 `.slurp`, `.lines`, `.words`, `.comb`, `.get`, `.getc`, `.getchars`. Yet, all
 but `.slurp` do not have `-rest` in their name, as the behaviour is implied.
+In fact, `Seq`-returning methods even interact with each other when called
+on the same handle, as the cursor being advanced by one iterator affects what
+the next item in another `Seq` will be.
 
 The longer name is even more absurd in `IO::Pipe`, on which `.seek` cannot be
 used.
