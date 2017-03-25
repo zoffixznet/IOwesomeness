@@ -31,7 +31,7 @@ Remove all of these methods from `IO::Handle`.
 
 Reasoning:
 1) Most of these don't make any sense on subclasses of `IO::Handle`
-(`IO::Pipe` and `IO::ArgFiles` or the proposed `IO::CatHandle`); `.d` doesn't
+(`IO::Pipe` and `IO::ArgFiles` or the proposed `IO::Cat`); `.d` doesn't
 make sense even on an `IO::Handle` itself, as directories can't be `.open`ed;
 `.chmod` affects whether an object is `.open`-able in the first place, so,
 amusingly, it's possible to open a file for reading, then `.chmod` it to be
