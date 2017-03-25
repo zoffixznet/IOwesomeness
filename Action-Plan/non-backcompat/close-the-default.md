@@ -22,12 +22,12 @@ causes a coredump on circa 2017.02 Rakudo)
 handle when the iterator is exhausted, unless `:keep-open` parameter is set
 to `True`
 
-Based on ecosystem survey, no one seems to be using the `:close` parameter
-anyway. My guess would be this is due to ignorance of its existence and
-that the programs are leaking filehandles, rather than the users explicitly closing the filehandle elsewhere in the program.
 A March 22, 2017 ecosystem grep showed 1125 potential calls to the methods, yet
 only one match came up for the `close` parameter on the same line: the
-`perl6/doc` repository.
+`perl6/doc` repository. Thus, no one seems to be using the `:close` parameter
+anyway. My guess would be this is due to ignorance of its existence and
+that the programs are leaking filehandles, rather than the users explicitly closing the filehandle elsewhere in the program in a way that my grep did
+not pick it up.
 
 ```bash
     $ grep -FR -e '.comb' -e '.lines' -e '.words' -e '.slurp-rest' | wc -l
