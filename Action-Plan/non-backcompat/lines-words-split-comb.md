@@ -63,7 +63,7 @@ I think situation **`(b)`** (can't guarantee close of handle) is a caveat that
 simply needs to be documented. Forcing the user to keep the filehandle around
 in a variable, just to be
 able to close it is a bit antisocial, and the problem becomes worse if the
-user wants to both lazily read a file and pass the, say `.lines` `Seq` around
+user wants to both lazily read a file and pass, say, the `.lines` `Seq` around
 the program, as along with the `Seq` the filehandle will need to be passed
 as well.
 
@@ -79,7 +79,7 @@ Thus, combined with critique of **`(a)`**, the recommended way to get the first
 
 And despite the removal of convenience `:close` parameter, it's quite easy
 for user to erroneously make a mistake and might even make it more likely the
-users will make it more often that (we [had a user who did just that](https://irclog.perlgeek.de/perl6/2017-03-11#i_14243167)):
+users will make it more often (we [had a user who did just that](https://irclog.perlgeek.de/perl6/2017-03-11#i_14243167)):
 
 ```perl6
     my $fh = open "foo";
@@ -91,7 +91,8 @@ users will make it more often that (we [had a user who did just that](https://ir
 **Proposed behaviour:**
 
 *`#1` Argument handling*
-- Do not take args to open as a `Capture`, take them as normal args and
+- Do not take args to pass to `.open` call as a `Capture`, take them as normal
+args and
 `Capture` the args for the routines we're delegating to instead. For the
 `open`, take only these parameters: `:$chomp`, `:$enc`, `$nl-in`, and
 `:$nl-out`. The rest of `open`'s arguments aren't applicable. This will
