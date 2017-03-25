@@ -4,7 +4,8 @@
 - [✔️] roast
 
 **Current behaviour**:
-There are thematically related routines `comb` (all the characters),
+
+There are thematically related routines: `comb` (all the characters),
 `words` (all the words), `lines` (all the lines), and `slurp` (all the stuff).
 All but the last are present as subroutines and as methods on `IO::Path`,
 `IO::ArgFiles`, `IO::Path`, and `IO::Pipe`.
@@ -14,6 +15,7 @@ With respect to `&slurp`, there is sub `&slurp` and method `.slurp` on `IO::Path
 `.slurp-rest`, but it's broken and unusable.
 
 **Proposed change**:
+
 Rename `.slurp-rest` to just `.slurp` in 6.d language and make use of
 `.slurp-rest` issue a deprecation warning.
 
