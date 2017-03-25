@@ -1,7 +1,8 @@
 ## Generalize `IO::ArgFiles` into `IO::Cat`
 
 **Current Behaviour:**
-- `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff
+- `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff. Users wishing to read
+from multipe files are left to their own devices.
 
 **Proposed Change:**
 All of the changes are proposed for 6.d.
