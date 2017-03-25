@@ -4,6 +4,7 @@
 - [✘] roast
 
 **Current behaviour:**
+
 `IO::Handle.lock` takes a single `Int:D` that specifies the type of lock
 to acquire.
 

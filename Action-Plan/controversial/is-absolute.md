@@ -4,9 +4,8 @@
 - [✔️] roast
 
 **Current behaviour:**
-`'/'.IO.is-absolute.say` returns `True`, despite the path lacking a drive.
-
-Currently, this behaviour is explicitly tested by 6.c-errata roast.
+- `'/'.IO.is-absolute.say` returns `True`, despite the path lacking a drive.
+- Currently, this behaviour is explicitly tested by 6.c-errata roast.
 
 **Proposed behaviour:**
 

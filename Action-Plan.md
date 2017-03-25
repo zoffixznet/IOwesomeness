@@ -742,6 +742,7 @@ were to use the old convention is a failure due to non-existent target.
 - [✘] roast
 
 **Current behaviour:**
+
 `IO::Handle.lock` takes a single `Int:D` that specifies the type of lock
 to acquire.
 
@@ -811,8 +812,9 @@ $ perl6 -e 'my $p = IO::Path.new-from-absolute-path("foo"); chdir "/tmp"; dd $p.
 # Controversial Changes
 
 I'm not 100% sure whether the changes in this section actually need to be made,
-as they appear to be deliberately introduced behaviours; I'm just unsure of
-the reasoning behind them.
+as they aim to change what appears to be deliberately introduced behaviours; I'm
+just unsure of the reasoning behind them. I'm also unsure which language
+version to make the changes in, were it decided the're needed.
 
 
 ------------------------------
@@ -823,9 +825,8 @@ the reasoning behind them.
 - [✔️] roast
 
 **Current behaviour:**
-`'/'.IO.is-absolute.say` returns `True`, despite the path lacking a drive.
-
-Currently, this behaviour is explicitly tested by 6.c-errata roast.
+- `'/'.IO.is-absolute.say` returns `True`, despite the path lacking a drive.
+- Currently, this behaviour is explicitly tested by 6.c-errata roast.
 
 **Proposed behaviour:**
 
