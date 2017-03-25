@@ -94,7 +94,7 @@ users will make it more often (we [had a user who did just that](https://irclog.
 - Do not take args to pass to `.open` call as a `Capture`, take them as normal
 args and
 `Capture` the args for the routines we're delegating to instead. For the
-`open`, take only these parameters: `:$chomp`, `:$enc`, `$nl-in`, and
+`.open` call, take only these parameters: `:$chomp`, `:$enc`, `$nl-in`, and
 `:$nl-out`. The rest of `open`'s arguments aren't applicable. This will
 also make it easier to ensure we're not missing any of the routines'
 args when forwarding them.
@@ -108,7 +108,7 @@ counterparts.
     - When `$limit` is given, close the filehandle when it's reached or when
         the iterator has been exhausted.
     - When `:$close`is `True`, close the filehandle when the iterator has been
-        exhausted
+        exhausted (side-note: the IO Plan proposes for `:close` functionality to be reworded in terms of `:keep-open`)
     - `+Inf` and `Whatever` `$limit` is permitted, to maintain consistency with
         `Str.lines($limit)` parameter. When set to such a value, the effect is the
         same as setting `:close` to `True`.
