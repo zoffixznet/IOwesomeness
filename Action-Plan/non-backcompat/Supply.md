@@ -1,4 +1,4 @@
-## Changes to `.Supply`
+## Changes to `.Supply` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/12)
 
 - [✘] docs
 - [✔️] roast ([1 test](https://github.com/perl6/roast/blob/4dcbbb9097a728b7e46feb582acbaff19b81014d/S16-io/supply.t#L30-L31))

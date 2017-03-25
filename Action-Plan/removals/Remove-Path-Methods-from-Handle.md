@@ -1,4 +1,4 @@
-## Remove `IO::Path` Methods from `IO::Handle`
+## Remove `IO::Path` Methods from `IO::Handle` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/23)
 
 - [✘] roast
 - [✘] docs (partial and inaccurate: only `.e`, `.d`, `.f`, `.s`, `.l`, `.r`, `.w`, `.x` are present and they all refer to "the invocant" rather than

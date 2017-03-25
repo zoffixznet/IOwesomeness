@@ -1,4 +1,4 @@
-## Expand Features of `IO::Path.extension`
+## Expand Features of `IO::Path.extension` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/5)
 
 **Current Behaviour:**
 

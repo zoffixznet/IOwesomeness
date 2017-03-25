@@ -1,4 +1,4 @@
-## Make `:close` behaviour the default in `IO::Handle` and Its Subclasses
+## Make `:close` behaviour the default in `IO::Handle` and Its Subclasses [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/15)
 
 - [✘] docs (`:close` is mentioned only for `.comb` and only in signature and a example's comment, not prose)
 - [✘] roast (`:close` is *used* in tests for `.words` and `.comb` but its functionality is not tested)

@@ -1,4 +1,4 @@
-## Restructure `spurt`
+## Restructure `spurt` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/3)
 
 - [✔️] docs (with several inaccuracies)
 - [✘] roast

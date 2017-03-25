@@ -1,4 +1,4 @@
-## Make `&words` default to `$*ARGFILES`
+## Make `&words` default to `$*ARGFILES` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/8)
 
 **Current behaviour:**
 

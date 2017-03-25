@@ -1,4 +1,4 @@
-## Generalize `IO::ArgFiles` into `IO::Cat`
+## Generalize `IO::ArgFiles` into `IO::Cat` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/11)
 
 **Current Behaviour:**
 - `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff. Users wishing to read

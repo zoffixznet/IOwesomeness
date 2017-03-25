@@ -1,4 +1,4 @@
-## Use typed exceptions instead of `X::AdHoc`
+## Use typed exceptions instead of `X::AdHoc` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/6)
 
 **Current Behaviour:**
 - Some IO exceptions are generic, `X::AdHoc` type of exceptions.

@@ -1,4 +1,4 @@
-## Remove `role IO {}` Along With Its Only `IO.umask` Method
+## Remove `role IO {}` Along With Its Only `IO.umask` Method [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/22)
 
 - [✘] docs (partial and inaccurate)
 - [✘] roast ([1 indirect test](https://github.com/perl6/roast/blob/4dcbbb9097a728b7e46feb582acbaff19b81014d/S06-multi/type-based.t#L43) that tests multi-dispatch by dispatching `$*ERR`

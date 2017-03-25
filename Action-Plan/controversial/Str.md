@@ -1,4 +1,4 @@
-## Make `IO::Path.Str` Return `$.abspath`
+## Make `IO::Path.Str` Return `$.abspath` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/20)
 
 **Current behaviour:**
 - `.Str` method uses the value of `$!path` attribute and does NOT take the

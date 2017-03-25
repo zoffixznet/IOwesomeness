@@ -1,4 +1,4 @@
-## Make `IO::Path.new-from-absolute-path` a private method
+## Make `IO::Path.new-from-absolute-path` a private method [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/19)
 
 - [✘] docs
 - [✘] roast

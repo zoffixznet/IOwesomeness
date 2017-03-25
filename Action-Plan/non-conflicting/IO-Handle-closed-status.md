@@ -1,4 +1,4 @@
-## `IO::Handle`'s Closed status
+## `IO::Handle`'s Closed status [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/2)
 
 **Current Behaviour:**
 - When a IO::Handle is closed, its $!PIO atribute is set to nqp::null. This

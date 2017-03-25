@@ -1,4 +1,4 @@
-## `&homedir`
+## Remove `&homedir` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/24)
 
 - [✘] docs
 - [✘] roast
