@@ -21,7 +21,7 @@ sub add-TOC {
         $^content.lines.grep(*.starts-with: '#').map({
             /^ $<indent>='#'+ \s* $<title>=<-[\n[]>+ <!after \s> \s*/ or next;
             '    ' x$<indent>.chars-1
-                ~ "- [$<title>](#$<title>.subst(:g, ' ', '-').subst(/<-[\w-]>/, '-', :g).uc())"
+                ~ "- [$<title>](#$<title>.subst(:g, ' ', '-').subst(/<-[\w-]>/, '', :g).lc())"
         }),
     $content;
 }
