@@ -312,7 +312,7 @@ With respect to `&slurp`, there is sub `&slurp` and method `.slurp` on `IO::Path
 Rename `.slurp-rest` to just `.slurp` in 6.d language and make use of
 `.slurp-rest` issue a deprecation warning.
 
-I can surmise the name change in `IO::Handle` and its subclasses was meant to
+I can surmise the alternate name in `IO::Handle` and its subclasses was meant to
 be indicative that `.slurp-rest` only slurps **from the current file position**.
 However, this caveat applies to every single read method in `IO::Handle`:
 `.slurp`, `.lines`, `.words`, `.comb`, `.get`, `.getc`, `.getchars`. Yet, all
