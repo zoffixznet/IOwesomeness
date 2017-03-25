@@ -871,6 +871,7 @@ the `IO.umask` as the replacement for Perl 5's `&umask` subroutine.
     on Windows).
 
 **Proposed Change:**
+
 Remove the role, together with its `.umask` method.
 
 While `.umask` could be re-implemented with C and adding another nqp op,
