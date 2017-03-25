@@ -181,7 +181,7 @@ addition, often the desired extension for files like `foo.tar.gz` would be
 
 **Proposed Change:**
 
-- Add `:$parts = 1` named parameter that specifies how many parts (the
+- Add `uint :$parts = 1` named parameter that specifies how many parts (the
     `.whatever` segments, counting from end) to consider as the extension.
     That is `'foo.tar.gz'.IO.extension` returns `'gz'`,
     `'foo.tar.gz'.IO.extension: :2parts` returns `'tar.gz'`, and
