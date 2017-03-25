@@ -25,6 +25,7 @@
     - [Improve `IO::Handle.lock` Arguments](#improve-iohandlelock-arguments)
     - [Make `IO::Path.new-from-absolute-path` a private method](#make-iopathnew-from-absolute-path-a-private-method)
 - [Controversial Changes](#controversial-changes)
+    - [Make `IO::Path.Str` Return `$.abspath`](#make-iopathstr-return-abspath)
     - [Make `IO::Path.is-absolute` Give False for `/` path on Windows](#make-iopathis-absolute-give-false-for--path-on-windows)
 - [Removals](#removals)
     - [Remove `role IO {}` Along With Its Only `IO.umask` Method](#remove-role-io--along-with-its-only-ioumask-method)
@@ -815,6 +816,21 @@ I'm not 100% sure whether the changes in this section actually need to be made,
 as they aim to change what appears to be deliberately introduced behaviours; I'm
 just unsure of the reasoning behind them. I'm also unsure which language
 version to make the changes in, were it decided the're needed.
+
+
+------------------------------
+
+## Make `IO::Path.Str` Return `$.abspath`
+
+**Current behaviour:**
+- `.Str` method uses the value of `$!path` attriubte and does NOT take the
+object's `$!CWD` into consideration. Thus, creating a relative
+`IO::Path` object, then `chdir`-ing somewhere, and then `.Str`-ing it will
+give an incorrect path.
+
+**Proposed behaviour:**
+
+Use `$.abspath` instead. The `.Str`-ingified path will be always absolute.
 
 
 ------------------------------
