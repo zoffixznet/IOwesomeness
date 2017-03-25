@@ -20,5 +20,6 @@ I can count on my fingers how many times I've used locks in my life, so I'm
 unsure which mode is more frequently used and whether one type of mode is
 way more frequent for it to be used as a reasonable default.
 
-Is it reasonable to take the possible modes via `.lock(:exclusive, :wait)`
-arguments and default to a shared, non-blocking lock?
+Unless an alternative is suggested, I'd like to change the method to take the
+possible modes via `.lock(:exclusive, :wait)` arguments and default to a
+shared, non-blocking lock.
