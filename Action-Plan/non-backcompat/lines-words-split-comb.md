@@ -59,8 +59,9 @@ means Perl 6 one liners will be commonly afflicted with both high RAM usage
 and performance issues (e.g. "print first line of a 4GB file" will require
 19GB of RAM and a lot of processing time, rather than being nearly instant).
 
-I think situation **`(b)`** is a caveat that simply needs to be documented.
-Forcing the user to keep the filehandle around in a variable, just to be
+I think situation **`(b)`** (can't guarantee close of handle) is a caveat that
+simply needs to be documented. Forcing the user to keep the filehandle around
+in a variable, just to be
 able to close it is a bit antisocial, and the problem becomes worse if the
 user wants to both lazily read a file and pass the, say `.lines` `Seq` around
 the program, as along with the `Seq` the filehandle will need to be passed
