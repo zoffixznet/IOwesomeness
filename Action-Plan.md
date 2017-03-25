@@ -378,7 +378,7 @@ To preserve backwards compatibility, the `:$test` parameter will remain for
 
 The changes in this section propose for a change of behaviour
 without providing any backwards compatible support. Unless noted otherwise, the
-proposal is for *immediate* change in 6.c language.
+proposal is for the change to be done in 6.c language.
 
 
 ------------------------------
