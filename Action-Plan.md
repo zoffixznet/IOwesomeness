@@ -711,8 +711,8 @@ does not have the filehandle leak issue:
 
 Routines `&rename`, `&move`, `&copy`, as well as `*nix` command line untilities
 `mv`, `cp`, **and `ln`** follow
-the `command $existing-thing, $thing-we're-creating` format with respect to
-their argument.
+the format of `command $existing-thing, $thing-we're-creating` with respect to
+their arguments.
 
 The `&link` and `&symlink` routines are an exception to this rule. And while
 `&symlink` is documented and tested, both the docs and the tests incorrectly
