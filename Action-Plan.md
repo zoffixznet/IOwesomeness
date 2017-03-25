@@ -390,6 +390,7 @@ proposal is for the change to be done in 6.c language.
 from multipe files are left to their own devices.
 
 **Proposed Change:**
+
 All of the changes are proposed for 6.d.
 
 We implement `IO::Cat`—a generalized version of what `IO::ArgFiles` currently does: an ability to seamlessly treat multiple filehandles as one, in read-only mode. The current `IO::ArgFiles` is obsoleted by `IO::Cat`, but since
