@@ -1,4 +1,4 @@
-### Make `&words` default to `$*ARGFILES`
+## Make `&words` default to `$*ARGFILES`
 
 **Current behaviour:**
 `&lines`, `&get`, and `&getc` (or "all lines", "one line", and "one char")

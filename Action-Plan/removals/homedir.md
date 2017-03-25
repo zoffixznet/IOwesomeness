@@ -1,4 +1,4 @@
-### `&homedir`
+## `&homedir`
 
 - [✘] docs
 - [✘] roast

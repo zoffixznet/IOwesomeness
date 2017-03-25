@@ -1,4 +1,4 @@
-### Rename `IO::Handle.slurp-rest` to just `.slurp`
+## Rename `IO::Handle.slurp-rest` to just `.slurp`
 
 - [✔️] docs
 - [✔️] roast

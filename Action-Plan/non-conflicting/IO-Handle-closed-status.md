@@ -1,4 +1,4 @@
-### `IO::Handle`'s Closed status
+## `IO::Handle`'s Closed status
 
 **Current Behaviour:**
 - When a IO::Handle is closed, its $!PIO atribute is set to nqp::null. This

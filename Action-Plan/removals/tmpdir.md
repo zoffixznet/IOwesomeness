@@ -1,4 +1,4 @@
-### `&tmpdir`
+## `&tmpdir`
 
 - [✘] docs
 - [✘] roast

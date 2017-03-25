@@ -1,4 +1,4 @@
-### Restructure `spurt`
+## Restructure `spurt`
 
 - [✔️] docs (with several inaccuracies)
 - [✘] roast

@@ -3,19 +3,19 @@
     - [Terms and Conventions](Terms-and-Conventions)
     - [Legend](Legend)
 - [Non-Conflicting Improvements](Non-Conflicting-Improvements)
-        - [Generalize `IO::ArgFiles` into `IO::Cat`](Generalize--IO--ArgFiles--into--IO--Cat-)
-        - [`IO::Handle`'s Closed status](-IO--Handle--s-Closed-status)
-        - [Restructure `spurt`](Restructure--spurt-)
-        - [`IO::Path` routines that involve a stat call](-IO--Path--routines-that-involve-a-stat-call)
-        - [`IO::Path.extension`](-IO--Path-extension-)
-        - [Use typed exceptions instead of `X::AdHoc`](Use-typed-exceptions-instead-of--X--AdHoc-)
-        - [Make `IO::Path.resolve` fail if it can't resolve path](Make--IO--Path-resolve--fail-if-it-can-t-resolve-path)
-        - [Make `&words` default to `$*ARGFILES`](Make---words--default-to----ARGFILES-)
+    - [`IO::Handle`'s Closed status](-IO--Handle--s-Closed-status)
+    - [Restructure `spurt`](Restructure--spurt-)
+    - [`IO::Path` routines that involve a stat call](-IO--Path--routines-that-involve-a-stat-call)
+    - [`IO::Path.extension`](-IO--Path-extension-)
+    - [Use typed exceptions instead of `X::AdHoc`](Use-typed-exceptions-instead-of--X--AdHoc-)
+    - [Make `IO::Path.resolve` fail if it can't resolve path](Make--IO--Path-resolve--fail-if-it-can-t-resolve-path)
+    - [Make `&words` default to `$*ARGFILES`](Make---words--default-to----ARGFILES-)
 - [Changes with Backwards-Compatible Support](Changes-with-Backwards-Compatible-Support)
-        - [`IO::Handle.seek` seek reference](-IO--Handle-seek--seek-reference)
-        - [Rename `IO::Handle.slurp-rest` to just `.slurp`](Rename--IO--Handle-slurp-rest--to-just---slurp-)
-        - [`:$test` parameter on multiple routines](---test--parameter-on-multiple-routines)
+    - [`IO::Handle.seek` seek reference](-IO--Handle-seek--seek-reference)
+    - [Rename `IO::Handle.slurp-rest` to just `.slurp`](Rename--IO--Handle-slurp-rest--to-just---slurp-)
+    - [`:$test` parameter on multiple routines](---test--parameter-on-multiple-routines)
 - [Changes with No Backwards-Compatible Support](Changes-with-No-Backwards-Compatible-Support)
+    - [Generalize `IO::ArgFiles` into `IO::Cat`](Generalize--IO--ArgFiles--into--IO--Cat-)
     - [Changes to `.Supply`](Changes-to---Supply-)
     - [Make `IO::Path.abspath` a private method](Make--IO--Path-abspath--a-private-method)
     - [Make `IO::Path.child` fail for non-child paths / Add `IO::Path.concat-with`](Make--IO--Path-child--fail-for-non-child-paths---Add--IO--Path-concat-with-)
@@ -27,14 +27,14 @@
 - [Controversial Changes](Controversial-Changes)
     - [Make `IO::Path.is-absolute` Give False for `/` path on Windows](Make--IO--Path-is-absolute--Give-False-for-----path-on-Windows)
 - [Removals](Removals)
-        - [Remove `role IO {}` Along With Its Only `IO.umask` Method](Remove--role-IO-----Along-With-Its-Only--IO-umask--Method)
+    - [Remove `role IO {}` Along With Its Only `IO.umask` Method](Remove--role-IO-----Along-With-Its-Only--IO-umask--Method)
     - [Remove `IO::Path` Methods from `IO::Handle`](Remove--IO--Path--Methods-from--IO--Handle-)
-        - [`&homedir`](--homedir-)
-        - [`&tmpdir`](--tmpdir-)
-    - [Bug Fixes](Bug-Fixes)
-            - [RT Tickets](RT-Tickets)
-            - [GitHub Issues](GitHub-Issues)
-            - [Other Issues](Other-Issues)
+    - [`&homedir`](--homedir-)
+    - [`&tmpdir`](--tmpdir-)
+- [Bug Fixes](Bug-Fixes)
+    - [RT Tickets](RT-Tickets)
+    - [GitHub Issues](GitHub-Issues)
+    - [Other Issues](Other-Issues)
 # IO Action Plan
 
 This document is a deliverable of [TPF Standardization, Test Coverage, and
@@ -54,28 +54,28 @@ a GitHub Issue where the topic can be discussed.**
 - `IO::Handle.seek` / `.seek` — all method names are referenced with a `.`
 before their name, which is optionally preceded by the type.
 - `&seek` — all subroutine names are referenced with a `&` before their name.
-- `seek` — if neither a dot, nor `&` preceeds the name, the reference is to
+- `seek` — if neither a `.` nor `&` preceeds the name, the reference is to
     both subroutines and methods with that name
 - `$*SPEC` — functionality common to `IO::Spec::*` types, is referred to using
 `$*SPEC` variable and means all `IO::Spec::*` types that implement a method or
-feature are proposed for change.
+feature proposed for change.
 
 ## Legend
 
-Some sections are marked as, e.g.:
+Some sections are marked as:
 
 - [✔️] docs
 - [✔️] master roast
 - [✘] 6.c-errata roast
 
 This indicates whether the **proposed change** affects something that
-is (`[✔️]`) or isn't (`[✘]`) documented on [docs.perl6.org](https://docs.perl6.org),
+*is* (`[✔️]`) or *isn't* (`[✘]`) documented on [docs.perl6.org](https://docs.perl6.org),
 tested in [master branch of roast](https://github.com/perl6/roast), or tested in
 [6.c-errata branch of roast](https://github.com/perl6/roast/tree/6.c-errata).
 Just `[✘] roast` means both `master` and `6.c-errata` branches.
 
-To re-iterate: the indicators are only for the proposed changes (e.g. removed
-argument); not entire routines.
+To re-iterate: the indicators are only for the *proposed changes* (e.g. removed
+argument); not *entire* routines.
 
 
 ------------------------------
@@ -83,42 +83,12 @@ argument); not entire routines.
 # Non-Conflicting Improvements
 
 The changes proposed in this section do not change current behaviour and merely
-enhance it or add new, non-conflicting features.
+enhance it or add new, non-conflicting features to.
 
 
 ------------------------------
 
-### Generalize `IO::ArgFiles` into `IO::Cat`
-
-**Current Behaviour:**
-- `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff
-
-**Proposed Change:**
-All of the changes are proposed for 6.d.
-
-We implement `IO::Cat`—a generalized version of what `IO::ArgFiles` currently does: an ability to seamlessly treat multiple filehandles as one, in read-only mode. The current `IO::ArgFiles` is obsoleted by `IO::Cat`, but since
-6.d language is additive and to be a more social with existing code, it is
-proposed for `IO::ArgFiles` to remain as simply `IO::ArgFiles is IO::Cat {}`
-and for `$*ARGFILES` to contain an `IO::ArgFiles` instance.
-
-An `IO::Cat` is `is IO::Handle` and is created via a `.new` method, with
-`:path` attribute that takes a list of `Str`, `IO::Path`, and `IO::Handle` (and
-by extension its subclass, `IO::Pipe`) objects. Mixing of types is allowed.
-`Str`s get turned into `IO::Path` at `IO::Cat`'s instantiation time.
-
-Any attempt to use any of the write methods or attempting to call `.open`
-in write, append, or exclusive modes throws. `.open` in read mode just
-returns `self`. `.seek` throws just as on `IO::Pipe`. All of the read methods
-operate the same as on a regular `IO::Handle`, going through the handles the
-object was instantiated with, opening any `IO::Path`s when their turn arrives.
-
-These are the broad strokes and since this is to be in 6.d, the implementation
-can be refined once first draft of it is done.
-
-
-------------------------------
-
-### `IO::Handle`'s Closed status
+## `IO::Handle`'s Closed status
 
 **Current Behaviour:**
 - When a IO::Handle is closed, its $!PIO atribute is set to nqp::null. This
@@ -135,7 +105,7 @@ performance impact to open handles (it was ~5% when such check was added to
 
 ------------------------------
 
-### Restructure `spurt`
+## Restructure `spurt`
 
 - [✔️] docs (with several inaccuracies)
 - [✘] roast
@@ -160,7 +130,7 @@ parameters, except for a single positional `Cool:D` parameter.
 
 ------------------------------
 
-### `IO::Path` routines that involve a stat call
+## `IO::Path` routines that involve a stat call
 
 **Routine List:**
 
@@ -183,7 +153,7 @@ will let us perform a single stat call to fetch all of the required information.
 
 ------------------------------
 
-### `IO::Path.extension`
+## `IO::Path.extension`
 
 It's not uncommon to see users asking on IRC how to
 obtain or modify an extension of a path. Depending on what is needed, the answer
@@ -224,7 +194,7 @@ The following changes are proposed:
 
 ------------------------------
 
-### Use typed exceptions instead of `X::AdHoc`
+## Use typed exceptions instead of `X::AdHoc`
 
 **Current Behaviour:**
 - Some IO exceptions are generic, `X::AdHoc` type of exceptions.
@@ -236,7 +206,7 @@ The following changes are proposed:
 
 ------------------------------
 
-### Make `IO::Path.resolve` fail if it can't resolve path
+## Make `IO::Path.resolve` fail if it can't resolve path
 
 **Current behaviour:**
 `.resolve` will attempt to access the filesystem and resolve all the links,
@@ -251,7 +221,7 @@ Add `Bool :$completely` parameter that, when specified as `True`, will cause
 
 ------------------------------
 
-### Make `&words` default to `$*ARGFILES`
+## Make `&words` default to `$*ARGFILES`
 
 **Current behaviour:**
 `&lines`, `&get`, and `&getc` (or "all lines", "one line", and "one char")
@@ -278,7 +248,7 @@ on use (and appropriately documented as being obsolete).
 
 ------------------------------
 
-### `IO::Handle.seek` seek reference [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/1)
+## `IO::Handle.seek` seek reference [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/1)
 
 - [✔️] docs
 - [✔️] master roast
@@ -297,7 +267,7 @@ will be removed in 6.d.
 
 ------------------------------
 
-### Rename `IO::Handle.slurp-rest` to just `.slurp`
+## Rename `IO::Handle.slurp-rest` to just `.slurp`
 
 - [✔️] docs
 - [✔️] roast
@@ -328,7 +298,7 @@ used.
 
 ------------------------------
 
-### `:$test` parameter on multiple routines
+## `:$test` parameter on multiple routines
 
 **Affected routines:**
 - `IO::Path.chdir` / `&chdir`
@@ -376,6 +346,36 @@ To preserve backwards compatibility, the `:$test` parameter will remain for
 
 The changes in this section propose for an immediate change of behaviour,
 without providing any backwards compatible support.
+
+
+------------------------------
+
+## Generalize `IO::ArgFiles` into `IO::Cat`
+
+**Current Behaviour:**
+- `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff
+
+**Proposed Change:**
+All of the changes are proposed for 6.d.
+
+We implement `IO::Cat`—a generalized version of what `IO::ArgFiles` currently does: an ability to seamlessly treat multiple filehandles as one, in read-only mode. The current `IO::ArgFiles` is obsoleted by `IO::Cat`, but since
+6.d language is additive and to be a more social with existing code, it is
+proposed for `IO::ArgFiles` to remain as simply `IO::ArgFiles is IO::Cat {}`
+and for `$*ARGFILES` to contain an `IO::ArgFiles` instance.
+
+An `IO::Cat` is `is IO::Handle` and is created via a `.new` method, with
+`:path` attribute that takes a list of `Str`, `IO::Path`, and `IO::Handle` (and
+by extension its subclass, `IO::Pipe`) objects. Mixing of types is allowed.
+`Str`s get turned into `IO::Path` at `IO::Cat`'s instantiation time.
+
+Any attempt to use any of the write methods or attempting to call `.open`
+in write, append, or exclusive modes throws. `.open` in read mode just
+returns `self`. `.seek` throws just as on `IO::Pipe`. All of the read methods
+operate the same as on a regular `IO::Handle`, going through the handles the
+object was instantiated with, opening any `IO::Path`s when their turn arrives.
+
+These are the broad strokes and since this is to be in 6.d, the implementation
+can be refined once first draft of it is done.
 
 
 ------------------------------
@@ -801,7 +801,7 @@ no deprecation period.
 
 ------------------------------
 
-### Remove `role IO {}` Along With Its Only `IO.umask` Method
+## Remove `role IO {}` Along With Its Only `IO.umask` Method
 
 - [✘] docs (partial and inaccurate)
 - [✘] roast ([1 indirect test](https://github.com/perl6/roast/blob/4dcbbb9097a728b7e46feb582acbaff19b81014d/S06-multi/type-based.t#L43) that tests multi-dispatch by dispatching `$*ERR`
@@ -888,7 +888,7 @@ Subclasses of `IO::Handle` that don't deal with paths can simply override
 
 ------------------------------
 
-### `&homedir`
+## `&homedir`
 
 - [✘] docs
 - [✘] roast
@@ -901,7 +901,7 @@ done.
 
 ------------------------------
 
-### `&tmpdir`
+## `&tmpdir`
 
 - [✘] docs
 - [✘] roast
@@ -915,12 +915,12 @@ done.
 
 ------------------------------
 
-## Bug Fixes
+# Bug Fixes
 
 Along with implementation of API changes in this proposal, an attempt to
 resolve the following tickets will be made under the [IO grant](http://news.perlfoundation.org/2017/01/grant-proposal-standardization.html).
 
-#### RT Tickets
+## RT Tickets
 
 - [RT#128047: Rakudo may crash if you use get() when -n is used (perl6 -ne 'say get' <<< 'hello')](https://rt.perl.org/Ticket/Display.html?id=128047)
 - [RT#125757: shell().exitcode is always 0 when :out is used](https://rt.perl.org/Ticket/Display.html?id=125757)
@@ -938,12 +938,12 @@ resolve the following tickets will be made under the [IO grant](http://news.perl
 - [RT#127772: mkdir($file) succeeds if $file exists and is a regular file](https://rt.perl.org/Ticket/Display.html?id=127772)
 - [RT#123838: IO::Handle::tell return 0, no matter what](https://rt.perl.org/Ticket/Display.html?id=123838)
 
-#### GitHub Issues
+## GitHub Issues
 
 - [roast/Add tests to make sure that file names roundtrip correctly when they should](https://github.com/perl6/roast/issues/221)
 - [doc/IO::Handle "replace" deprecated method ins with kv](https://github.com/perl6/doc/issues/401)
 
 
-#### Other Issues
+## Other Issues
 
 - `IO::Path.resolve` is not portable and produces wrong results on Windows.

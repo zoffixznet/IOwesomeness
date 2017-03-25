@@ -1,4 +1,4 @@
-### `IO::Path.extension`
+## `IO::Path.extension`
 
 It's not uncommon to see users asking on IRC how to
 obtain or modify an extension of a path. Depending on what is needed, the answer

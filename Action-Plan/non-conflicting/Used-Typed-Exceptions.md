@@ -1,4 +1,4 @@
-### Use typed exceptions instead of `X::AdHoc`
+## Use typed exceptions instead of `X::AdHoc`
 
 **Current Behaviour:**
 - Some IO exceptions are generic, `X::AdHoc` type of exceptions.

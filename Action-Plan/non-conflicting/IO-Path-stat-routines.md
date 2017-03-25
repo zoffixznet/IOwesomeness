@@ -1,4 +1,4 @@
-### `IO::Path` routines that involve a stat call
+## `IO::Path` routines that involve a stat call
 
 **Routine List:**
 
