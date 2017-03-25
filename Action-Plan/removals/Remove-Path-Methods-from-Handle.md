@@ -22,9 +22,11 @@
 - `.mode`
 
 **Current behaviour:**
+
 The methods delegate to `IO::Handle`'s `$!path` attribute.
 
 **Proposed behaviour:**
+
 Remove all of these methods from `IO::Handle`.
 
 Reasoning:
@@ -45,3 +47,6 @@ gathered or actions are performed by the affected routines is generally at the
 `IO::Handle`, contains the path of the object the handle is opened on.
 Subclasses of `IO::Handle` that don't deal with paths can simply override
 *that* method instead of having to override the 15 affected routines.
+
+The removal also cleans up the interface of the proposed `IO::Cat` type, in
+which these method do not produce anything useful.
