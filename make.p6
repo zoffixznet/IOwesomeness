@@ -23,7 +23,7 @@ sub add-TOC {
             my ($indent, $title) = $0, $1;
             '    ' x$indent.chars-1
                 ~ "- [$title](#$title.subst(:g, ' ', '-').subst(/<-[\w-]>/, '', :g).lc()"
-                ~ "{'-issue-for-discussion' x ($indent.chars != 0)})"
+                ~ "{'-issue-for-discussion' x ($indent.chars != 1)})"
         }),
     $content;
 }
