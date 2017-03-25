@@ -675,13 +675,12 @@ counterparts.
 - Add `$limit` parameter to all 4 routines in `IO::Handle` (`.lines` already
     has it, although it's not implemented in a way that avoids the leak)
     - When `$limit` is given, close the filehandle when it's reached or when
-        the iterator has been exhausted.
-    - When `:$close`is `True`, close the filehandle when the iterator has been
-        exhausted (side-note: the IO Plan proposes for `:close` functionality to be reworded in terms of `:keep-open`)
+        the iterator has been exhausted, unless `:keep-open` is set to `True`
+    - Unless `:keep-open` parameter is `True`, close the filehandle when
+        the iterator has been exhausted (even if `$limit` isn't given)
     - `+Inf` and `Whatever` `$limit` is permitted, to maintain consistency with
         `Str.lines($limit)` parameter. When set to such a value, the effect is the
         same as setting `:close` to `True`.
-    - Specifying both `$limit` and `:$close` is a fatal exception.
 - Clearly document the filehandle leak issue along with plentiful examples
 of using `$limit` instead of `[^whatever]` on the returned `Seq`, or to
 exhaust the partially-consumed Seq by sinking it, when you're done with it.
