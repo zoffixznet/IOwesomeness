@@ -617,7 +617,7 @@ a slurped file needs about 4.8x its size of RAM. So slurping files, especially
 ones with no pre-defined (by programmer) format, can very easily nom all the
 available RAM that on many servers is limited as it is.
 
-So by introducing this behaviour, I believe we'll be essentially instating a
+So by introducing this behaviour, I believe we'll be unwittingly instating a
 "best practice" to never use `IO::Path` methods due to their slurping
 behaviour, programmer's lack of full control over the environment and
 the files the program will work in and operate on.
