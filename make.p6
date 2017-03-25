@@ -19,9 +19,11 @@ sub read-section {
 sub add-TOC {
     join "\n", "# Table of Contents",
         $^content.lines.grep(*.starts-with: '#').map({
-            /^ $<indent>='#'+ \s* $<title>=<-[\n[]>+ <!after \s> \s*/ or next;
-            '    ' x$<indent>.chars-1
-                ~ "- [$<title>](#$<title>.subst(:g, ' ', '-').subst(/<-[\w-]>/, '', :g).lc(){'-issue-for-discussion' x ($<indent>.chars != 0)})"
+            /^ ('#'+) \s* (<-[\n[]>+) <!after \s> \s*/ or next;
+            my ($indent, $title) = $0, $1;
+            '    ' x$indent.chars-1
+                ~ "- [$title](#$title.subst(:g, ' ', '-').subst(/<-[\w-]>/, '', :g).lc()"
+                ~ "{'-issue-for-discussion' x ($indent.chars != 0)})"
         }),
     $content;
 }
