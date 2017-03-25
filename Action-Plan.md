@@ -186,7 +186,7 @@ addition, often the desired extension for files like `foo.tar.gz` would be
     That is `'foo.tar.gz'.IO.extension` returns `'gz'`,
     `'foo.tar.gz'.IO.extension: :2parts` returns `'tar.gz'`, and
     `'foo.tar.gz'.IO.extension: :3parts` returns `''` (signaling there is no
-        [3-part] extension on the file).
+        (3-part) extension on the file).
 
     In the future we can extend this to take a `Range` or `Junction` of values,
     but for now, just a single `UInt` should be sufficient. The default value
