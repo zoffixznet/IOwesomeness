@@ -161,7 +161,6 @@ can be beneficial.
 `nqp::stat_multi` op that will take bitwise-ORed `nqp::const::STAT*` constants
 representing the pieces of stat information to be returned as a hash. This
 will let us perform a single stat call to fetch all of the required information.
-
 (related discussion: https://irclog.perlgeek.de/perl6-dev/2017-03-06#i_14213924)
 
 
