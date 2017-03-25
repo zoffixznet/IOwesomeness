@@ -36,7 +36,7 @@ not pick it up.
     1
 ```
 
-Second, it's likely much more common to wish to close the filehandle at the end
+Also, it's likely much more common to wish to close the filehandle at the end
 in these methods than not to. The operations provide a the file as basically a
 stream of chunks: whole (`.slurp-rest`), line-sized (`.lines`), word-sized
 (`.words`), pattern- or character-sized (`.comb`), letting the user perform
