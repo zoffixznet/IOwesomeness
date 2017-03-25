@@ -6,7 +6,7 @@
     - [`IO::Handle`'s Closed status](#iohandles-closed-status)
     - [Restructure `spurt`](#restructure-spurt)
     - [`IO::Path` routines that involve a stat call](#iopath-routines-that-involve-a-stat-call)
-    - [`IO::Path.extension`](#iopathextension)
+    - [Expand Features of `IO::Path.extension`](#expand-features-of-iopathextension)
     - [Use typed exceptions instead of `X::AdHoc`](#use-typed-exceptions-instead-of-xadhoc)
     - [Make `IO::Path.resolve` fail if it can't resolve path](#make-iopathresolve-fail-if-it-cant-resolve-path)
     - [Make `&words` default to `$*ARGFILES`](#make-words-default-to-argfiles)
@@ -166,7 +166,7 @@ will let us perform a single stat call to fetch all of the required information.
 
 ------------------------------
 
-## `IO::Path.extension`
+## Expand Features of `IO::Path.extension`
 
 It's not uncommon to see users asking on IRC how to
 obtain or modify an extension of a path. Depending on what is needed, the answer
