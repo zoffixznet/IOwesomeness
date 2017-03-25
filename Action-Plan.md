@@ -529,7 +529,7 @@ under the name `.child`:
 
 The routines `&slurp`, `IO::Path.slurp`, `&lines`, `IO::Path.lines`, `&comb`,
 `IO::Path.comb`, `IO::Path.words`, `IO::Path.split`, and the
-corresponding `IO::ArgFiles` routines **close the filehandle at the end**
+corresponding `IO::ArgFiles` routines **close the filehandle at the end.**
 
 Contrary to that pattern, `IO::Handle` and `IO::Pipe` routines `.slurp-rest`,
 `.lines`, `.words`, `.comb`, and `.split` do *NOT* close the handle by default
@@ -544,9 +544,9 @@ causes a coredump on circa 2017.02 Rakudo)
 handle when the iterator is exhausted, unless `:keep-open` parameter is set
 to `True`
 
-First, no one seems to be using the `:close` parameter anyway. My guess would
-be this is due to ignorance and these programs are leaking filehandles, rather
-than the users explicitly closing the filehandle elsewhere in the program.
+Based on ecosystem survey, no one seems to be using the `:close` parameter
+anyway. My guess would be this is due to ignorance of its existence and
+that the programs are leaking filehandles, rather than the users explicitly closing the filehandle elsewhere in the program.
 A March 22, 2017 ecosystem grep showed 1125 potential calls to the methods, yet
 only one match came up for the `close` parameter on the same line: the
 `perl6/doc` repository.
