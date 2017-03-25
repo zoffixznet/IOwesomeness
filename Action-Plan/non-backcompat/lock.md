@@ -1,4 +1,4 @@
-## Improve `IO::Handle.lock` Arguments [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/18)
+## Improve `IO::Handle.lock` Arguments [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/18)
 
 - [✘] docs
 - [✘] roast

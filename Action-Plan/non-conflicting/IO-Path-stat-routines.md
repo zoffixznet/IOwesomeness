@@ -1,4 +1,4 @@
-## `IO::Path` routines that involve a stat call [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/4)
+## `IO::Path` routines that involve a stat call [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/4)
 
 **Affected Routines:**
 - `.d`

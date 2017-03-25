@@ -1,4 +1,4 @@
-## Remove `&tmpdir` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/25)
+## Remove `&tmpdir` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/25)
 
 - [✘] docs
 - [✘] roast

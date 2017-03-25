@@ -1,4 +1,4 @@
-## Make `IO::Path.is-absolute` Give False for `/` path on Windows [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/21)
+## Make `IO::Path.is-absolute` Give False for `/` path on Windows [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/21)
 
 - [✔️] docs (but not the information that `/` is absolute on Windows)
 - [✔️] roast

@@ -1,4 +1,4 @@
-## Rename `IO::Handle.slurp-rest` to just `.slurp` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/9)
+## Rename `IO::Handle.slurp-rest` to just `.slurp` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/9)
 
 - [✔️] docs
 - [✔️] roast

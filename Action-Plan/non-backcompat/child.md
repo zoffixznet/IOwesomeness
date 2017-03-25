@@ -1,4 +1,4 @@
-## Make `IO::Path.child` fail for non-child paths / Add `IO::Path.concat-with` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/14)
+## Make `IO::Path.child` fail for non-child paths / Add `IO::Path.concat-with` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/14)
 
 - [✔️] docs (but no description of ability to use nested paths or parent paths)
 - [✔️] roast (but no tests of ability to use nested paths or parent paths)

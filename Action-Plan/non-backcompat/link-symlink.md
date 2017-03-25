@@ -1,4 +1,4 @@
-## Change order of arguments in `&link`/`&symlink` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/17)
+## Change order of arguments in `&link`/`&symlink` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/17)
 
 *For `&link`:*
 - [✘] docs

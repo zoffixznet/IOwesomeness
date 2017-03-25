@@ -1,4 +1,4 @@
-## Changes to behaviour of `.lines`, `.words`, `.split`, `.comb` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/16)
+## Changes to behaviour of `.lines`, `.words`, `.split`, `.comb` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/16)
 
 - [✘] docs
 - [✘] roast

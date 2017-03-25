@@ -1,4 +1,4 @@
-## Make `IO::Path.resolve` fail if it can't resolve path [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/7)
+## Make `IO::Path.resolve` fail if it can't resolve path [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/7)
 
 **Current behaviour:**
 

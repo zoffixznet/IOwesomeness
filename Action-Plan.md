@@ -89,7 +89,7 @@ enhance it or add new, non-conflicting features to.
 
 ------------------------------
 
-## `IO::Handle`'s Closed status [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/2)
+## `IO::Handle`'s Closed status [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/2)
 
 **Current Behaviour:**
 - When a IO::Handle is closed, its $!PIO atribute is set to nqp::null. This
@@ -106,7 +106,7 @@ performance impact to open handles (it was ~5% when such check was added to
 
 ------------------------------
 
-## Restructure `spurt` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/3)
+## Restructure `spurt` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/3)
 
 - [✔️] docs (with several inaccuracies)
 - [✘] roast
@@ -133,7 +133,7 @@ parameters, except for a single positional `Cool:D` parameter.
 
 ------------------------------
 
-## `IO::Path` routines that involve a stat call [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/4)
+## `IO::Path` routines that involve a stat call [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/4)
 
 **Affected Routines:**
 - `.d`
@@ -170,7 +170,7 @@ will let us perform a single stat call to fetch all of the required information.
 
 ------------------------------
 
-## Expand Features of `IO::Path.extension` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/5)
+## Expand Features of `IO::Path.extension` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/5)
 
 **Current Behaviour:**
 
@@ -213,7 +213,7 @@ addition, often the desired extension for files like `foo.tar.gz` would be
 
 ------------------------------
 
-## Use typed exceptions instead of `X::AdHoc` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/6)
+## Use typed exceptions instead of `X::AdHoc` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/6)
 
 **Current Behaviour:**
 - Some IO exceptions are generic, `X::AdHoc` type of exceptions.
@@ -225,7 +225,7 @@ addition, often the desired extension for files like `foo.tar.gz` would be
 
 ------------------------------
 
-## Make `IO::Path.resolve` fail if it can't resolve path [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/7)
+## Make `IO::Path.resolve` fail if it can't resolve path [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/7)
 
 **Current behaviour:**
 
@@ -242,7 +242,7 @@ Add `Bool :$completely` parameter that, when specified as `True`, will cause
 
 ------------------------------
 
-## Make `&words` default to `$*ARGFILES` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/8)
+## Make `&words` default to `$*ARGFILES` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/8)
 
 **Current behaviour:**
 
@@ -272,7 +272,7 @@ on use (and appropriately documented as being obsolete).
 
 ------------------------------
 
-## `IO::Handle.seek` seek reference [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/1)
+## `IO::Handle.seek` seek reference [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/1)
 
 - [✔️] docs
 - [✔️] master roast
@@ -292,7 +292,7 @@ will be removed in 6.d.
 
 ------------------------------
 
-## Rename `IO::Handle.slurp-rest` to just `.slurp` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/9)
+## Rename `IO::Handle.slurp-rest` to just `.slurp` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/9)
 
 - [✔️] docs
 - [✔️] roast
@@ -331,7 +331,7 @@ used.
 
 ------------------------------
 
-## `:$test` parameter on multiple routines [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/10)
+## `:$test` parameter on multiple routines [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/10)
 
 **Affected routines:**
 - `IO::Path.chdir` / `&chdir`
@@ -384,7 +384,7 @@ proposal is for the change to be done in 6.c language.
 
 ------------------------------
 
-## Generalize `IO::ArgFiles` into `IO::Cat` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/11)
+## Generalize `IO::ArgFiles` into `IO::Cat` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/11)
 
 **Current Behaviour:**
 - `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff. Users wishing to read
@@ -416,7 +416,7 @@ can be refined once first draft of it is done.
 
 ------------------------------
 
-## Changes to `.Supply` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/12)
+## Changes to `.Supply` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/12)
 
 - [✘] docs
 - [✔️] roast ([1 test](https://github.com/perl6/roast/blob/4dcbbb9097a728b7e46feb582acbaff19b81014d/S16-io/supply.t#L30-L31))
@@ -436,7 +436,7 @@ in non-binary mode and then reading in binary feels like a thinko.
 
 ------------------------------
 
-## Make `IO::Path.abspath` a private method [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/13)
+## Make `IO::Path.abspath` a private method [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/13)
 
 - [✔️] docs
 - [✘] roast
@@ -456,7 +456,7 @@ about which version takes the `$CWD` argument.
 
 ------------------------------
 
-## Make `IO::Path.child` fail for non-child paths / Add `IO::Path.concat-with` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/14)
+## Make `IO::Path.child` fail for non-child paths / Add `IO::Path.concat-with` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/14)
 
 - [✔️] docs (but no description of ability to use nested paths or parent paths)
 - [✔️] roast (but no tests of ability to use nested paths or parent paths)
@@ -521,7 +521,7 @@ under the name `.child`:
 
 ------------------------------
 
-## Make `:close` behaviour the default in `IO::Handle` and Its Subclasses [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/15)
+## Make `:close` behaviour the default in `IO::Handle` and Its Subclasses [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/15)
 
 - [✘] docs (`:close` is mentioned only for `.comb` and only in signature and a example's comment, not prose)
 - [✘] roast (`:close` is *used* in tests for `.words` and `.comb` but its functionality is not tested)
@@ -568,7 +568,7 @@ after exhausting the iterator (which would require the handle to be kept open).
 
 ------------------------------
 
-## Changes to behaviour of `.lines`, `.words`, `.split`, `.comb` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/16)
+## Changes to behaviour of `.lines`, `.words`, `.split`, `.comb` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/16)
 
 - [✘] docs
 - [✘] roast
@@ -698,7 +698,7 @@ does not have the filehandle leak issue:
 
 ------------------------------
 
-## Change order of arguments in `&link`/`&symlink` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/17)
+## Change order of arguments in `&link`/`&symlink` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/17)
 
 *For `&link`:*
 - [✘] docs
@@ -737,7 +737,7 @@ were to use the old convention is a failure due to non-existent target.
 
 ------------------------------
 
-## Improve `IO::Handle.lock` Arguments [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/18)
+## Improve `IO::Handle.lock` Arguments [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/18)
 
 - [✘] docs
 - [✘] roast
@@ -767,7 +767,7 @@ shared, non-blocking lock.
 
 ------------------------------
 
-## Make `IO::Path.new-from-absolute-path` a private method [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/19)
+## Make `IO::Path.new-from-absolute-path` a private method [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/19)
 
 - [✘] docs
 - [✘] roast
@@ -820,7 +820,7 @@ version to make the changes in, were it decided the're needed.
 
 ------------------------------
 
-## Make `IO::Path.Str` Return `$.abspath` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/20)
+## Make `IO::Path.Str` Return `$.abspath` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/20)
 
 **Current behaviour:**
 - `.Str` method uses the value of `$!path` attribute and does NOT take the
@@ -837,7 +837,7 @@ a path as a relative path, making it sensitive to `$*CWD`, if they so require.
 
 ------------------------------
 
-## Make `IO::Path.is-absolute` Give False for `/` path on Windows [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/21)
+## Make `IO::Path.is-absolute` Give False for `/` path on Windows [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/21)
 
 - [✔️] docs (but not the information that `/` is absolute on Windows)
 - [✔️] roast
@@ -866,7 +866,7 @@ no deprecation period.
 
 ------------------------------
 
-## Remove `role IO {}` Along With Its Only `IO.umask` Method [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/22)
+## Remove `role IO {}` Along With Its Only `IO.umask` Method [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/22)
 
 - [✘] docs (partial and inaccurate)
 - [✘] roast ([1 indirect test](https://github.com/perl6/roast/blob/4dcbbb9097a728b7e46feb582acbaff19b81014d/S06-multi/type-based.t#L43) that tests multi-dispatch by dispatching `$*ERR`
@@ -904,7 +904,7 @@ and so it should be removed as well.
 
 ------------------------------
 
-## Remove `IO::Path` Methods from `IO::Handle` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/23)
+## Remove `IO::Path` Methods from `IO::Handle` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/23)
 
 - [✘] roast
 - [✘] docs (partial and inaccurate: only `.e`, `.d`, `.f`, `.s`, `.l`, `.r`, `.w`, `.x` are present and they all refer to "the invocant" rather than
@@ -960,7 +960,7 @@ which these method do not produce anything useful.
 
 ------------------------------
 
-## Remove `&homedir` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/24)
+## Remove `&homedir` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/24)
 
 - [✘] docs
 - [✘] roast
@@ -973,7 +973,7 @@ done.
 
 ------------------------------
 
-## Remove `&tmpdir` [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/25)
+## Remove `&tmpdir` [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/25)
 
 - [✘] docs
 - [✘] roast

@@ -1,4 +1,4 @@
-## `:$test` parameter on multiple routines [[Issue for dicussion]](https://github.com/zoffixznet/IOwesomeness/issues/10)
+## `:$test` parameter on multiple routines [[Issue for discussion]](https://github.com/zoffixznet/IOwesomeness/issues/10)
 
 **Affected routines:**
 - `IO::Path.chdir` / `&chdir`
