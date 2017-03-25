@@ -925,7 +925,7 @@ make sense even on an `IO::Handle` itself, as directories can't be `.open`ed;
 amusingly, it's possible to open a file for reading, then `.chmod` it to be
 unreadable, and then continue reading from it.
 2) The methods are unlikely to be oft-used and so the 5 characters of typing
-that they save (see point (3) below) isn't a useful saving.
+that they save (see point `(3)` below) isn't a useful saving.
 The usual progression goes from `Str` (a filename) to `IO::Path` (`Str.IO` call)
 to `IO::Handle` (`IO::Path.open` call). The point at which the information is
 gathered or actions are performed by the affected routines is generally at the
