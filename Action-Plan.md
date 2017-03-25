@@ -398,7 +398,7 @@ We implement `IO::Cat`—a generalized version of what `IO::ArgFiles` currently 
 proposed for `IO::ArgFiles` to remain as simply `IO::ArgFiles is IO::Cat {}`
 and for `$*ARGFILES` to contain an `IO::ArgFiles` instance.
 
-An `IO::Cat` is `is IO::Handle` and is created via a `.new` method, with
+An `IO::Cat` `is IO::Handle` and is created via a `.new` method, with
 `:path` attribute that takes a list of `Str`, `IO::Path`, and `IO::Handle` (and
 by extension its subclass, `IO::Pipe`) objects. Mixing of types is allowed.
 `Str`s get turned into `IO::Path` at `IO::Cat`'s instantiation time.
