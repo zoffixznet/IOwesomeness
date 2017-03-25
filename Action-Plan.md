@@ -3,11 +3,12 @@
     - [Terms and Conventions](Terms-and-Conventions)
     - [Legend](Legend)
 - [Non-Conflicting Improvements](Non-Conflicting-Improvements)
-        - [`IO::CatPath` and `IO::CatHandle`](-IO--CatPath--and--IO--CatHandle-)
+        - [Generalize `IO::ArgFiles` into `IO::Cat`](Generalize--IO--ArgFiles--into--IO--Cat-)
         - [`IO::Handle`'s Closed status](-IO--Handle--s-Closed-status)
         - [Restructure `spurt`](Restructure--spurt-)
         - [`IO::Path` routines that involve a stat call](-IO--Path--routines-that-involve-a-stat-call)
         - [`IO::Path.extension`](-IO--Path-extension-)
+        - [Use typed exceptions instead of `X::AdHoc`](Use-typed-exceptions-instead-of--X--AdHoc-)
         - [Make `IO::Path.resolve` fail if it can't resolve path](Make--IO--Path-resolve--fail-if-it-can-t-resolve-path)
         - [Make `&words` default to `$*ARGFILES`](Make---words--default-to----ARGFILES-)
 - [Changes with Backwards-Compatible Support](Changes-with-Backwards-Compatible-Support)
@@ -21,6 +22,7 @@
     - [Make `:close` behaviour the default in `IO::Handle` and Its Subclasses](Make---close--behaviour-the-default-in--IO--Handle--and-Its-Subclasses)
     - [Changes to behaviour of `.lines`, `.words`, `.split`, `.comb`](Changes-to-behaviour-of---lines-----words-----split-----comb-)
     - [Change order of arguments in `&link`/`&symlink`](Change-order-of-arguments-in---link----symlink-)
+    - [Improve `IO::Handle.lock` Arguments](Improve--IO--Handle-lock--Arguments)
     - [Make `IO::Path.new-from-absolute-path` a private method](Make--IO--Path-new-from-absolute-path--a-private-method)
 - [Controversial Changes](Controversial-Changes)
     - [Make `IO::Path.is-absolute` Give False for `/` path on Windows](Make--IO--Path-is-absolute--Give-False-for-----path-on-Windows)
@@ -86,20 +88,32 @@ enhance it or add new, non-conflicting features.
 
 ------------------------------
 
-### `IO::CatPath` and `IO::CatHandle`
+### Generalize `IO::ArgFiles` into `IO::Cat`
 
 **Current Behaviour:**
 - `IO::CatPath` and `IO::CatHandle` [have been removed pre-Christmas](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e) and `IO::ArgFiles` handles the `$*ARGFILES` stuff
 
 **Proposed Change:**
-All of the changes are proposed for 6.d. We bring back a generalized version of
-what `IO::ArgFiles` currently does: an ability to seamlessly treat multiple
-handles as one.
+All of the changes are proposed for 6.d.
 
-If the idea is approved, more detailed design plan will be drafted first.
-Speaking in broad strokes, [in the past implementation](https://github.com/rakudo/rakudo/commit/a28270f009e15baa04ce76e), `IO::CatPath` looks superflous—the implemented methods merely delegate
-to `IO::CatHandle` and the unimplemented methods that `IO::Path` has don't
-make much sense in `IO::CatPath`.
+We implement `IO::Cat`—a generalized version of what `IO::ArgFiles` currently does: an ability to seamlessly treat multiple filehandles as one, in read-only mode. The current `IO::ArgFiles` is obsoleted by `IO::Cat`, but since
+6.d language is additive and to be a more social with existing code, it is
+proposed for `IO::ArgFiles` to remain as simply `IO::ArgFiles is IO::Cat {}`
+and for `$*ARGFILES` to contain an `IO::ArgFiles` instance.
+
+An `IO::Cat` is `is IO::Handle` and is created via a `.new` method, with
+`:path` attribute that takes a list of `Str`, `IO::Path`, and `IO::Handle` (and
+by extension its subclass, `IO::Pipe`) objects. Mixing of types is allowed.
+`Str`s get turned into `IO::Path` at `IO::Cat`'s instantiation time.
+
+Any attempt to use any of the write methods or attempting to call `.open`
+in write, append, or exclusive modes throws. `.open` in read mode just
+returns `self`. `.seek` throws just as on `IO::Pipe`. All of the read methods
+operate the same as on a regular `IO::Handle`, going through the handles the
+object was instantiated with, opening any `IO::Path`s when their turn arrives.
+
+These are the broad strokes and since this is to be in 6.d, the implementation
+can be refined once first draft of it is done.
 
 
 ------------------------------
@@ -206,6 +220,18 @@ The following changes are proposed:
     Note: since `.extension` returns the extension without the leading dot,
     the replacement string does not have it either. However, since the users
     may be inclined to include it, we should warn if it is included.
+
+
+------------------------------
+
+### Use typed exceptions instead of `X::AdHoc`
+
+**Current Behaviour:**
+- Some IO exceptions are generic, `X::AdHoc` type of exceptions.
+
+**Proposed Change:**
+- Use existing and create new, if needed, exceptions, all living in
+`X::IO::*` namespace.
 
 
 ------------------------------
@@ -662,6 +688,34 @@ be reversed:
 
 - `link $existing-thing, $thing-we're-creating` (`link $target, $name`)
 - `symlink $existing-thing, $thing-we're-creating` (`symlink $target, $name`)
+
+
+------------------------------
+
+## Improve `IO::Handle.lock` Arguments
+
+- [✘] docs
+- [✘] roast
+
+**Current behaviour:**
+`IO::Handle.lock` takes a single `Int:D` that specifies the type of lock
+to acquire.
+
+**Proposed behaviour:**
+I'd like to make the arguments more user-friendly, without creating a new
+enum, if possible, as those interfere with parenthesis-less subroutine calls.
+
+From [the sourcecode](https://github.com/MoarVM/MoarVM/blob/a8448142d8b49a742a6b167907736d0ebbae9779/src/io/syncfile.c#L303-L358), I gather the `Int:D` argument
+represents whether: (a) a lock is *exclusive* or *shared*;
+(b) the method will block until a lock is acquired or it'll throw if it cannot
+be acquired.
+
+I can count on my fingers how many times I've used locks in my life, so I'm
+unsure which mode is more frequently used and whether one type of mode is
+way more frequent for it to be used as a reasonable default.
+
+Is it reasonable to take the possible modes via `.lock(:exclusive, :wait)`
+arguments and default to a shared, non-blocking lock?
 
 
 ------------------------------
