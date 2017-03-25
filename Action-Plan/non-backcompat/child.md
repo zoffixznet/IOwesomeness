@@ -4,6 +4,7 @@
 - [✔️] roast (but no tests of ability to use nested paths or parent paths)
 
 **Current behaviour:**
+
 `.child` can accept any path part, so
 `"/tmp/files/".IO.child("../../my/secrets")` is a valid operation and based
 on the argument given to `.child`, the resulting path may be something that
