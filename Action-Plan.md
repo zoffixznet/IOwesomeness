@@ -726,7 +726,9 @@ to maintain consistency both within `&rename`, `&move`, `&copy`, `&link`, and
 `&symlink` routines and with `ln <-> &link/&symlink`.
 
 It is proposed the order of the arguments for `&link` and `&symlink` to
-be reversed (right now; in 6.c language):
+be reversed (right now; in 6.c language). There appears to be no modules in
+the ecosystem that use these routines and the failure mode when someone
+were to use the old convention is a failure due to non-existent target.
 
 - `link $existing-thing, $thing-we're-creating` (`link $target, $name`)
 - `symlink $existing-thing, $thing-we're-creating` (`symlink $target, $name`)
