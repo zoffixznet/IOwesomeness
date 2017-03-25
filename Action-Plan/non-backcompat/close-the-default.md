@@ -18,8 +18,8 @@ causes a coredump on circa 2017.02 Rakudo)
 **Proposed behaviour:**
 
 - Remove `:close` parameter
-- Add `:keep-open` `Bool` parameter that defaults to `False`. Close the
-handle when the iterator is exhausted, unless `:keep-open` parameter is set
+- Add `:leave-open` `Bool` parameter that defaults to `False`. Close the
+handle when the iterator is exhausted, unless `:leave-open` parameter is set
 to `True`
 
 A March 22, 2017 ecosystem grep showed 1125 potential calls to the methods, yet

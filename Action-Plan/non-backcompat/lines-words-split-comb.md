@@ -102,16 +102,18 @@ args when forwarding them.
 counterparts.
 
 *`#2` Possibility of filehandle leak*
-- Leave `:$close` parameter in place for all 4 routines in `IO::Handle`
+- *SIDE NOTE: another section in this IO Plan proposes to reword the
+    functionality of the `:$close` parameter in terms of `:$leave-open`. The
+    prose that follows reflects that change*
+- Keep the `:$leave-open` parameter present for all 4 routines in `IO::Handle`
 - Add `$limit` parameter to all 4 routines in `IO::Handle` (`.lines` already
     has it, although it's not implemented in a way that avoids the leak)
     - When `$limit` is given, close the filehandle when it's reached or when
-        the iterator has been exhausted, unless `:keep-open` is set to `True`
-    - Unless `:keep-open` parameter is `True`, close the filehandle when
+        the iterator has been exhausted, unless `:leave-open` is set to `True`
+    - Unless `:leave-open` parameter is `True`, close the filehandle when
         the iterator has been exhausted (even if `$limit` isn't given)
     - `+Inf` and `Whatever` `$limit` is permitted, to maintain consistency with
-        `Str.lines($limit)` parameter. When set to such a value, the effect is the
-        same as setting `:close` to `True`.
+        `Str.lines($limit)` parameter. When set to such a value, the effect is the same as setting no limit
 - Clearly document the filehandle leak issue along with plentiful examples
 of using `$limit` instead of `[^whatever]` on the returned `Seq`, or to
 exhaust the partially-consumed Seq by sinking it, when you're done with it.
