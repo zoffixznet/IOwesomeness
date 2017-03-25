@@ -39,7 +39,8 @@ under the name `.child`:
     child of the original path. The last part of the path does not have to
     actually
     exist in order to pass the check. The idea behind the new behaviour is to
-    make it possible to *securely* use code like this and not worry that
+    make it possible to *securely* use code like the example below
+     and not worry that
     `$user-input` would contain any path that would be able to read from
     or write to outside the original path (in the example, that is
     `/tmp/files/`):
