@@ -855,7 +855,8 @@ no deprecation period.
 to `IO` type candidate)
 
 **Documentation:**
-While the documentation website mentions `role IO`, it's mainly to list
+
+While the documentation website does mention `role IO`, it's mainly to list
 the IO subroutines. The role itself is described as
 *"Input/output related object"*, which isn't entirely true, as `IO::Path` does
 not do `IO`, despite being related.
