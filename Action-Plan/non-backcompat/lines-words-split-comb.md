@@ -21,7 +21,7 @@
 **Problems:**
 
 *`#1` Argument handling*
-- `IO::Handle`'s method differ in functionality with their `Str.`
+- `IO::Handle`'s methods differ in functionality with their `Str.`
 counter-parts (e.g. `.split` does not offer `:skip-empty`).
 - Several of the arguments accepted and forwarded to `open` aren't needed for
 *reading* mode these routines use
@@ -48,9 +48,9 @@ a slurped file needs about 4.8x its size of RAM. So slurping files, especially
 ones with no pre-defined (by programmer) format, can very easily nom all the
 available RAM that on many servers is limited as it is.
 
-So by introducing this behaviour, we'll be essentially instating a "best
-practice" to never use `IO::Path` methods due to their slurping
-behaviour, and programmer's lack of full control over the environment and
+So by introducing this behaviour, I believe we'll be essentially instating a
+"best practice" to never use `IO::Path` methods due to their slurping
+behaviour, programmer's lack of full control over the environment and
 the files the program will work in and operate on.
 
 In addition, since the subroutine forms of these routines simply forward to

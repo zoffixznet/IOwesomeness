@@ -24,8 +24,7 @@ to `True`
 
 A March 22, 2017 ecosystem grep showed 1125 potential calls to the methods, yet
 only one match came up for the `close` parameter on the same line: the
-`perl6/doc` repository. Thus, no one seems to be using the `:close` parameter
-anyway. My guess would be this is due to ignorance of its existence and
+`perl6/doc` repository. Thus, no one seems to be using the `:close` parameter. My guess would be this is due to ignorance of its existence and
 that the programs are leaking filehandles, rather than the users explicitly closing the filehandle elsewhere in the program in a way that my grep did
 not pick it up.
 
@@ -37,7 +36,7 @@ not pick it up.
 ```
 
 Also, it's likely much more common to wish to close the filehandle at the end
-in these methods than not to. The operations provide a the file as basically a
+in these methods than not to. The operations provide the file as basically a
 stream of chunks: whole (`.slurp-rest`), line-sized (`.lines`), word-sized
 (`.words`), pattern- or character-sized (`.comb`), letting the user perform
 most possible operations without needing to `.seek` to another file position
