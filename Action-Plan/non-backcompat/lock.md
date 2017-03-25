@@ -9,6 +9,10 @@
 to acquire.
 
 **Proposed behaviour:**
+
+- Remove the `Int:D` argument
+- Use named arguments to specify mode
+
 I'd like to make the arguments more user-friendly, without creating a new
 enum, if possible, as those interfere with parenthesis-less subroutine calls.
 
