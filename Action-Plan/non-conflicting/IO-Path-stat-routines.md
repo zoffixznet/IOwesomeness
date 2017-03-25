@@ -1,8 +1,20 @@
 ## `IO::Path` routines that involve a stat call
 
-**Routine List:**
-
-`.d`, `.f`, `.l`, `.r`, `.s`, `.w`, `.x`, `.z`, `.rw`, `.rwx`, `.modified`, `.accessed`, `.changed`, `.mode`
+**Affected Routines:**
+- `.d`
+- `.f`
+- `.l`
+- `.r`
+- `.s`
+- `.w`
+- `.x`
+- `.z`
+- `.rw`
+- `.rwx`
+- `.modified`
+- `.accessed`
+- `.changed`
+- `.mode`
 
 **Current Behaviour:**
 Each test goes out to VM to perform several `stat` calls (other than `.e` that

@@ -1,40 +1,40 @@
 # Table of Contents
-- [IO Action Plan](IO-Action-Plan)
-    - [Terms and Conventions](Terms-and-Conventions)
-    - [Legend](Legend)
-- [Non-Conflicting Improvements](Non-Conflicting-Improvements)
-    - [`IO::Handle`'s Closed status](-IO--Handle--s-Closed-status)
-    - [Restructure `spurt`](Restructure--spurt-)
-    - [`IO::Path` routines that involve a stat call](-IO--Path--routines-that-involve-a-stat-call)
-    - [`IO::Path.extension`](-IO--Path-extension-)
-    - [Use typed exceptions instead of `X::AdHoc`](Use-typed-exceptions-instead-of--X--AdHoc-)
-    - [Make `IO::Path.resolve` fail if it can't resolve path](Make--IO--Path-resolve--fail-if-it-can-t-resolve-path)
-    - [Make `&words` default to `$*ARGFILES`](Make---words--default-to----ARGFILES-)
-- [Changes with Backwards-Compatible Support](Changes-with-Backwards-Compatible-Support)
-    - [`IO::Handle.seek` seek reference](-IO--Handle-seek--seek-reference)
-    - [Rename `IO::Handle.slurp-rest` to just `.slurp`](Rename--IO--Handle-slurp-rest--to-just---slurp-)
-    - [`:$test` parameter on multiple routines](---test--parameter-on-multiple-routines)
-- [Changes with No Backwards-Compatible Support](Changes-with-No-Backwards-Compatible-Support)
-    - [Generalize `IO::ArgFiles` into `IO::Cat`](Generalize--IO--ArgFiles--into--IO--Cat-)
-    - [Changes to `.Supply`](Changes-to---Supply-)
-    - [Make `IO::Path.abspath` a private method](Make--IO--Path-abspath--a-private-method)
-    - [Make `IO::Path.child` fail for non-child paths / Add `IO::Path.concat-with`](Make--IO--Path-child--fail-for-non-child-paths---Add--IO--Path-concat-with-)
-    - [Make `:close` behaviour the default in `IO::Handle` and Its Subclasses](Make---close--behaviour-the-default-in--IO--Handle--and-Its-Subclasses)
-    - [Changes to behaviour of `.lines`, `.words`, `.split`, `.comb`](Changes-to-behaviour-of---lines-----words-----split-----comb-)
-    - [Change order of arguments in `&link`/`&symlink`](Change-order-of-arguments-in---link----symlink-)
-    - [Improve `IO::Handle.lock` Arguments](Improve--IO--Handle-lock--Arguments)
-    - [Make `IO::Path.new-from-absolute-path` a private method](Make--IO--Path-new-from-absolute-path--a-private-method)
-- [Controversial Changes](Controversial-Changes)
-    - [Make `IO::Path.is-absolute` Give False for `/` path on Windows](Make--IO--Path-is-absolute--Give-False-for-----path-on-Windows)
-- [Removals](Removals)
-    - [Remove `role IO {}` Along With Its Only `IO.umask` Method](Remove--role-IO-----Along-With-Its-Only--IO-umask--Method)
-    - [Remove `IO::Path` Methods from `IO::Handle`](Remove--IO--Path--Methods-from--IO--Handle-)
-    - [`&homedir`](--homedir-)
-    - [`&tmpdir`](--tmpdir-)
-- [Bug Fixes](Bug-Fixes)
-    - [RT Tickets](RT-Tickets)
-    - [GitHub Issues](GitHub-Issues)
-    - [Other Issues](Other-Issues)
+- [#IO ACTION PLAN](IO-Action-Plan)
+    - [#TERMS AND CONVENTIONS](Terms-and-Conventions)
+    - [#LEGEND](Legend)
+- [#NON-CONFLICTING IMPROVEMENTS](Non-Conflicting-Improvements)
+    - [#`IO::HANDLE`'S CLOSED STATUS](-IO--Handle--s-Closed-status)
+    - [#RESTRUCTURE `SPURT`](Restructure--spurt-)
+    - [#`IO::PATH` ROUTINES THAT INVOLVE A STAT CALL](-IO--Path--routines-that-involve-a-stat-call)
+    - [#`IO::PATH.EXTENSION`](-IO--Path-extension-)
+    - [#USE TYPED EXCEPTIONS INSTEAD OF `X::ADHOC`](Use-typed-exceptions-instead-of--X--AdHoc-)
+    - [#MAKE `IO::PATH.RESOLVE` FAIL IF IT CAN'T RESOLVE PATH](Make--IO--Path-resolve--fail-if-it-can-t-resolve-path)
+    - [#MAKE `&WORDS` DEFAULT TO `$*ARGFILES`](Make---words--default-to----ARGFILES-)
+- [#CHANGES WITH BACKWARDS-COMPATIBLE SUPPORT](Changes-with-Backwards-Compatible-Support)
+    - [#`IO::HANDLE.SEEK` SEEK REFERENCE](-IO--Handle-seek--seek-reference)
+    - [#RENAME `IO::HANDLE.SLURP-REST` TO JUST `.SLURP`](Rename--IO--Handle-slurp-rest--to-just---slurp-)
+    - [#`:$TEST` PARAMETER ON MULTIPLE ROUTINES](---test--parameter-on-multiple-routines)
+- [#CHANGES WITH NO BACKWARDS-COMPATIBLE SUPPORT](Changes-with-No-Backwards-Compatible-Support)
+    - [#GENERALIZE `IO::ARGFILES` INTO `IO::CAT`](Generalize--IO--ArgFiles--into--IO--Cat-)
+    - [#CHANGES TO `.SUPPLY`](Changes-to---Supply-)
+    - [#MAKE `IO::PATH.ABSPATH` A PRIVATE METHOD](Make--IO--Path-abspath--a-private-method)
+    - [#MAKE `IO::PATH.CHILD` FAIL FOR NON-CHILD PATHS / ADD `IO::PATH.CONCAT-WITH`](Make--IO--Path-child--fail-for-non-child-paths---Add--IO--Path-concat-with-)
+    - [#MAKE `:CLOSE` BEHAVIOUR THE DEFAULT IN `IO::HANDLE` AND ITS SUBCLASSES](Make---close--behaviour-the-default-in--IO--Handle--and-Its-Subclasses)
+    - [#CHANGES TO BEHAVIOUR OF `.LINES`, `.WORDS`, `.SPLIT`, `.COMB`](Changes-to-behaviour-of---lines-----words-----split-----comb-)
+    - [#CHANGE ORDER OF ARGUMENTS IN `&LINK`/`&SYMLINK`](Change-order-of-arguments-in---link----symlink-)
+    - [#IMPROVE `IO::HANDLE.LOCK` ARGUMENTS](Improve--IO--Handle-lock--Arguments)
+    - [#MAKE `IO::PATH.NEW-FROM-ABSOLUTE-PATH` A PRIVATE METHOD](Make--IO--Path-new-from-absolute-path--a-private-method)
+- [#CONTROVERSIAL CHANGES](Controversial-Changes)
+    - [#MAKE `IO::PATH.IS-ABSOLUTE` GIVE FALSE FOR `/` PATH ON WINDOWS](Make--IO--Path-is-absolute--Give-False-for-----path-on-Windows)
+- [#REMOVALS](Removals)
+    - [#REMOVE `ROLE IO {}` ALONG WITH ITS ONLY `IO.UMASK` METHOD](Remove--role-IO-----Along-With-Its-Only--IO-umask--Method)
+    - [#REMOVE `IO::PATH` METHODS FROM `IO::HANDLE`](Remove--IO--Path--Methods-from--IO--Handle-)
+    - [#`&HOMEDIR`](--homedir-)
+    - [#`&TMPDIR`](--tmpdir-)
+- [#BUG FIXES](Bug-Fixes)
+    - [#RT TICKETS](RT-Tickets)
+    - [#GITHUB ISSUES](GitHub-Issues)
+    - [#OTHER ISSUES](Other-Issues)
 # IO Action Plan
 
 This document is a deliverable of [TPF Standardization, Test Coverage, and
@@ -96,7 +96,7 @@ causes calls to many methods on a closed file handle to return LTA error,
 such as `foo requires an object with REPR MVMOSHandle`.
 
 **Proposed Change:**
-- On handle close, mixin a role that overrides all the relevant methods
+- On handle's closing, mixin a role that overrides all the relevant methods
 to throw/fail with an error. This will give the same behaviour as adding
 `if nqp::isnull($!PIO) { ... throw ... }` to all the methods, without a
 performance impact to open handles (it was ~5% when such check was added to
@@ -121,6 +121,8 @@ is ignored. The binary mode is enabled based on whether or not the spurted
 **Proposed Change:**
 - Move `IO::Path.spurt` implementation to `IO::Handle`. Remove all of its
 parameters, except for a single positional `Cool:D` parameter.
+    - the bin/non-bin mode is selected based on whether the handle is in
+        bin/non-bin mode    
 - Make `IO::Path.spurt` delegate to `IO::Handle`
     - Remove `:bin` argument and ascertain the spurt mode based on the type
         of the content to be spurted
@@ -132,9 +134,21 @@ parameters, except for a single positional `Cool:D` parameter.
 
 ## `IO::Path` routines that involve a stat call
 
-**Routine List:**
-
-`.d`, `.f`, `.l`, `.r`, `.s`, `.w`, `.x`, `.z`, `.rw`, `.rwx`, `.modified`, `.accessed`, `.changed`, `.mode`
+**Affected Routines:**
+- `.d`
+- `.f`
+- `.l`
+- `.r`
+- `.s`
+- `.w`
+- `.x`
+- `.z`
+- `.rw`
+- `.rwx`
+- `.modified`
+- `.accessed`
+- `.changed`
+- `.mode`
 
 **Current Behaviour:**
 Each test goes out to VM to perform several `stat` calls (other than `.e` that

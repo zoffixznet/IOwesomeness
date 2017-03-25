@@ -14,6 +14,8 @@ is ignored. The binary mode is enabled based on whether or not the spurted
 **Proposed Change:**
 - Move `IO::Path.spurt` implementation to `IO::Handle`. Remove all of its
 parameters, except for a single positional `Cool:D` parameter.
+    - the bin/non-bin mode is selected based on whether the handle is in
+        bin/non-bin mode    
 - Make `IO::Path.spurt` delegate to `IO::Handle`
     - Remove `:bin` argument and ascertain the spurt mode based on the type
         of the content to be spurted
