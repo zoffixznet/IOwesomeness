@@ -1,12 +1,14 @@
 ## Expand Features of `IO::Path.extension`
 
+**Current Behaviour:**
+
 It's not uncommon to see users asking on IRC how to
 obtain or modify an extension of a path. Depending on what is needed, the answer
 is usually a gnarly-looking `.subst` or `.split`+`.join` invocation. In
 addition, often the desired extension for files like `foo.tar.gz` would be
 `tar.gz`, yet the current `.extension` does not offer a means to obtain it.
 
-The following changes are proposed:
+**Proposed Change:**
 
 - Add `:$parts = 1` named parameter that specifies how many parts (the
     `.whatever` segments, counting from end) to consider as the extension.

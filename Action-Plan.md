@@ -151,16 +151,19 @@ parameters, except for a single positional `Cool:D` parameter.
 - `.mode`
 
 **Current Behaviour:**
-- Each test goes out to VM to perform several `stat` calls (other than `.e` that
+
+Each test goes out to VM to perform several `stat` calls (other than `.e` that
 performs just one). For example, a single `.rwx` call performs 4 `stat` calls.
 Based on IRC conversation, `stat` call is expensive and caching its results
 can be beneficial.
 
 **Proposed Change:**
-- Change `nqp::const::STAT*` constants to be powers of 2. Add
+
+Change `nqp::const::STAT*` constants to be powers of 2. Add
 `nqp::stat_multi` op that will take bitwise-ORed `nqp::const::STAT*` constants
 representing the pieces of stat information to be returned as a hash. This
 will let us perform a single stat call to fetch all of the required information.
+
 (related discussion: https://irclog.perlgeek.de/perl6-dev/2017-03-06#i_14213924)
 
 
@@ -168,13 +171,15 @@ will let us perform a single stat call to fetch all of the required information.
 
 ## Expand Features of `IO::Path.extension`
 
+**Current Behaviour:**
+
 It's not uncommon to see users asking on IRC how to
 obtain or modify an extension of a path. Depending on what is needed, the answer
 is usually a gnarly-looking `.subst` or `.split`+`.join` invocation. In
 addition, often the desired extension for files like `foo.tar.gz` would be
 `tar.gz`, yet the current `.extension` does not offer a means to obtain it.
 
-The following changes are proposed:
+**Proposed Change:**
 
 - Add `:$parts = 1` named parameter that specifies how many parts (the
     `.whatever` segments, counting from end) to consider as the extension.
