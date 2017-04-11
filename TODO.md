@@ -1,3 +1,5 @@
+--- Log https://github.com/rakudo/rakudo/commit/08a973572f8be44dded96e7164408d3893d4becc in the April report
+
 --- Ensure all routines fail with `X::IO::*` exceptions, not AdHocs
 
 --- Every new IO::Path gets `$*CWD` as IO::Path, which it then coerces to Str.
