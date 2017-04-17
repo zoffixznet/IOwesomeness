@@ -1,5 +1,15 @@
-# Final Notes on Changes Due to IO Grant Work
+# Final Note on Changes Due to IO Grant Work
 
+The IO grant work is at its wrap up. This note lists some of the last-minute changes to the plans
+delineated in earlier communications.
+
+- We implemented [`IO::Path.sibling`](https://docs.perl6.org/routine/sibling)
+- The promised `IO::Path.concat-with` was instead added as the much shorter
+  [`IO::Path.add`](https://docs.perl6.org/routine/add). Due to large ecosystem usage,
+  `IO::Path.child` was left as is
+  for now. The secure version is already written and `.child` will be swapped
+  to use it later on; possibly around 6.d time. This will allow more time for
+  users to update to the `.add` routine, where the secureness isn't needed.
 - `&mkdir` multi candidate that takes a list of directories has been removed.
     IO::Path.mkdir has been changed to return the invocant on success, to
     mirror the subroutine form's behaviour
